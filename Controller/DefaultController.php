@@ -109,9 +109,7 @@ class DefaultController extends Controller
             }
             $envelope->setData($data);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
         
 
@@ -148,9 +146,7 @@ class DefaultController extends Controller
             $data = $atendimento->jsonSerialize();
             $envelope->setData($data);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
@@ -185,9 +181,7 @@ class DefaultController extends Controller
 
             $envelope->setData($data);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
         
         
@@ -221,9 +215,7 @@ class DefaultController extends Controller
             $service = new AtendimentoService($em);
             $service->transferir($atendimento, $unidade, $servico, $prioridade);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
@@ -267,9 +259,7 @@ class DefaultController extends Controller
             $stmt->bindValue('unidade', $unidade->getId());
             $stmt->execute() > 0;
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
@@ -297,9 +287,7 @@ class DefaultController extends Controller
             $service = new AtendimentoService($em);
             $service->cancelar($atendimento, $unidade);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
