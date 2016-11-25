@@ -5,6 +5,7 @@ namespace Novosga\MonitorBundle\Controller;
 use Exception;
 use Novosga\Http\Envelope;
 use Novosga\Entity\Unidade;
+use Novosga\Entity\Atendimento;
 use Novosga\Service\AtendimentoService;
 use Novosga\Service\FilaService;
 use Novosga\Service\ServicoService;
@@ -12,6 +13,8 @@ use Novosga\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
+use Novosga\MonitorBundle\Form\TransferirType;
 
 /**
  * DefaultController
@@ -30,25 +33,15 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $unidade = $request->getSession()->get('unidade');
-        $servicos = $this->servicos($unidade, ' e.status = 1 ');
-
-        // lista de prioridades para ser utilizada ao redirecionar senha
-        $prioridades = $em
-                    ->getRepository(\Novosga\Entity\Prioridade::class)
-                    ->findBy([
-                        'status' => 1
-                    ], [
-                        'peso' => 'ASC',
-                        'nome' => 'ASC'
-                    ]);
+        $servicos = $this->servicos($unidade, 'e.status = 1');
+        
+        $transferirForm = $this->createTransferirForm($request);
 
         return $this->render('NovosgaMonitorBundle:Default:index.html.twig', [
             'unidade' => $unidade,
             'servicos' => $servicos,
-            'prioridades' => $prioridades,
+            'transferirForm' => $transferirForm->createView(),
             'milis' => time() * 1000
         ]);
     }
@@ -60,6 +53,24 @@ class DefaultController extends Controller
         $service = new ServicoService($em);
 
         return $service->servicosUnidade($unidade, $where);
+    }
+    
+    /**
+     * @return TransferirType
+     */
+    private function createTransferirForm(Request $request)
+    {
+        $unidade = $request->getSession()->get('unidade');
+        $servicos = $this->servicos($unidade, 'e.status = 1');
+        
+        $transferirForm = $this->createForm(TransferirType::class, null, [
+            'csrf_protection' => false,
+            'servicos' => array_map(function ($su) {
+                            return $su->getServico();
+                        }, $servicos)
+        ]);
+        
+        return $transferirForm;
     }
 
     /**
@@ -87,9 +98,8 @@ class DefaultController extends Controller
             $ids = Arrays::valuesToInt(explode(',', $ids));
             
             if (count($ids)) {
-                $data['total'] = 0;
                 $servicos = $this->servicos($unidade, ' e.servico IN ('.implode(',', $ids).') ');
-                $em = $this->getDoctrine()->getManager();
+                
                 if ($servicos) {
                     foreach ($servicos as $su) {
                         $rs = $filaService->filaServico($unidade, $su->getServico());
@@ -101,19 +111,18 @@ class DefaultController extends Controller
                                 $arr = $atendimento->jsonSerialize(true);
                                 $fila[] = $arr;
                             }
-                            $data['servicos'][$su->getServico()->getId()] = $fila;
-                            $data['total']++;
+                            $data[] = [
+                                'servicoUnidade' => $su,
+                                'fila' => $fila,
+                            ];
                         }
                     }
                 }
             }
             $envelope->setData($data);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
-        
 
         return $this->json($envelope);
     }
@@ -123,12 +132,10 @@ class DefaultController extends Controller
      * @param Request $request
      * @return Response
      * 
-     * @Route("/info_senha", name="novosga_monitor_infosenha")
+     * @Route("/info_senha/{id}", name="novosga_monitor_infosenha")
      */
-    public function infoSenhaAction(Request $request)
+    public function infoSenhaAction(Request $request, Atendimento $atendimento)
     {
-        $em = $this->getDoctrine()->getManager();
-        
         $envelope = new Envelope();
         $unidade = $request->getSession()->get('unidade');
         
@@ -137,20 +144,12 @@ class DefaultController extends Controller
                 throw new Exception(_('Nenhuma unidade escolhida'));
             }
             
-            $id = (int) $request->get('id');
-            $service = new AtendimentoService($em);
-            $atendimento = $service->buscaAtendimento($unidade, $id);
-            
-            if (!$atendimento) {
-                throw new Exceptio(_('Atendimento inválido'));
-            }
+            $this->checkAtendimento($unidade, $atendimento);
             
             $data = $atendimento->jsonSerialize();
             $envelope->setData($data);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
@@ -178,19 +177,12 @@ class DefaultController extends Controller
             $numero = $request->get('numero');
             $service = new AtendimentoService($em);
             $atendimentos = $service->buscaAtendimentos($unidade, $numero);
-            $data['total'] = count($atendimentos);
-            foreach ($atendimentos as $atendimento) {
-                $data['atendimentos'][] = $atendimento->jsonSerialize();
-            }
-
-            $envelope->setData($data);
+            $envelope->setData($atendimentos);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
         
-        
+        return $this->json($envelope);
     }
 
     /**
@@ -198,9 +190,10 @@ class DefaultController extends Controller
      *
      * @param Request $request
      * 
-     * @Route("/transferir", name="novosga_monitor_transferir")
+     * @Route("/transferir/{id}", name="novosga_monitor_transferir")
+     * @Method("POST")
      */
-    public function transferirAction(Request $request)
+    public function transferirAction(Request $request, Atendimento $atendimento)
     {
         $em = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
@@ -210,20 +203,27 @@ class DefaultController extends Controller
             if (!$unidade) {
                 throw new Exception(_('Nenhuma unidade selecionada'));
             }
-            $id = (int) $request->get('id');
-            $atendimento = $this->getAtendimento($unidade, $id);
-            /*
-             * TODO: verificar se o servico informado esta disponivel para a unidade.
-             */
-            $servico = (int) $request->get('servico');
-            $prioridade = (int) $request->get('prioridade');
+            
+            $this->checkAtendimento($unidade, $atendimento);
+            
+            $data = json_decode($request->getContent(), true);
+            
+            $transferirForm = $this->createTransferirForm($request);
+            $transferirForm->submit($data);
+            
+            if (!$transferirForm->isValid()) {
+                throw new Exception(_('Formulário inválido'));
+            }
 
             $service = new AtendimentoService($em);
-            $service->transferir($atendimento, $unidade, $servico, $prioridade);
+            $service->transferir(
+                    $atendimento, 
+                    $unidade, 
+                    $transferirForm->get('servico')->getData(), 
+                    $transferirForm->get('prioridade')->getData()
+            );
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
@@ -235,9 +235,10 @@ class DefaultController extends Controller
      *
      * @param Request $request
      * 
-     * @Route("/reativar", name="novosga_monitor_reativar")
+     * @Route("/reativar/{id}", name="novosga_monitor_reativar")
+     * @Method("POST")
      */
-    public function reativarAction(Request $request)
+    public function reativarAction(Request $request, Atendimento $atendimento)
     {
         $em = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
@@ -247,7 +248,7 @@ class DefaultController extends Controller
             if (!$unidade) {
                 throw new Exception(_('Nenhuma unidade selecionada'));
             }
-            $id = (int) $request->get('id');
+            
             $conn = $em->getConnection();
             $status = implode(',', [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU]);
             // reativa apenas se estiver finalizada (data fim diferente de nulo)
@@ -262,14 +263,12 @@ class DefaultController extends Controller
                     unidade_id = :unidade AND
                     status IN ({$status})
             ");
-            $stmt->bindValue('id', $id);
+            $stmt->bindValue('id', $atendimento->getId());
             $stmt->bindValue('status', AtendimentoService::SENHA_EMITIDA);
             $stmt->bindValue('unidade', $unidade->getId());
             $stmt->execute() > 0;
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
@@ -280,9 +279,10 @@ class DefaultController extends Controller
      *
      * @param Request $request
      * 
-     * @Route("/cancelar", name="novosga_monitor_cancelar")
+     * @Route("/cancelar/{id}", name="novosga_monitor_cancelar")
+     * @Method("POST")
      */
-    public function cancelarAction(Request $request)
+    public function cancelarAction(Request $request, Atendimento $atendimento)
     {
         $em = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
@@ -292,31 +292,21 @@ class DefaultController extends Controller
             if (!$unidade) {
                 throw new Exception(_('Nenhuma unidade selecionada'));
             }
-            $id = (int) $request->get('id');
-            $atendimento = $this->getAtendimento($unidade, $id);
+            
+            $this->checkAtendimento($unidade, $atendimento);
             $service = new AtendimentoService($em);
             $service->cancelar($atendimento, $unidade);
         } catch (Exception $e) {
-            $envelope
-                    ->setSuccess(false)
-                    ->setMessage($e->getMessage());
+            $envelope->exception($e);
         }
 
         return $this->json($envelope);
     }
 
-    private function getAtendimento(Unidade $unidade, $id)
+    private function checkAtendimento(Unidade $unidade, Atendimento $atendimento)
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $atendimento = $em->find('Novosga\Entity\Atendimento', $id);
-        if (!$atendimento || $atendimento->getServicoUnidade()->getUnidade()->getId() != $unidade->getId()) {
+        if ($atendimento->getServicoUnidade()->getUnidade()->getId() != $unidade->getId()) {
             throw new Exception(_('Atendimento inválido'));
         }
-        if (!$atendimento) {
-            throw new Exception(_('Atendimento inválido'));
-        }
-
-        return $atendimento;
     }
 }

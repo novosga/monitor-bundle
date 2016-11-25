@@ -1,188 +1,308 @@
 {% extends "base.html.twig" %}
 
 {% block body %}
+    <h1>
+        <i class="fa fa-desktop" aria-hidden="true"></i>
+        {% trans %}Monitor{% endtrans %}
+        <small>
+            {% trans %}Gerencie os atendimentos da unidade{% endtrans %}
+        </small>
+    </h1>
+    
     <div id="monitor">
-        <form class="form-inline" role="search" onsubmit="return false">
+        <form class="form-inline" role="search"  v-on:submit.prevent="consulta">
             <div class="form-group">
-                <input type="text" id="buscar-senha" class="form-search form-control" placeholder="{% trans %}buscar senha{% endtrans %}" />
+                <input type="text" class="form-search form-control" placeholder="{% trans %}buscar senha{% endtrans %}" v-model="search">
             </div>
-            <button id="btn-open-consulta" class="btn btn-primary" onclick="App.Monitor.Senha.consulta()">
+            <button type="submit" class="btn btn-primary">
                 <span class="glyphicon glyphicon-search"></span>&nbsp;
                 {% trans %}Consultar{% endtrans %}
             </button>
         </form>
-        {% for su in servicos %}
-        <div id="servico-{{ su.servico.id }}" class="servico empty" data-id="{{ su.servico.id }}">
-            <div class="panel panel-default">
-                <div class="panel-body">
-                    <span class="title">{{ su.sigla }} - {{ su.servico.nome }}</span>
-                    <ul class="fila list-inline">
-                    </ul>
+        <div class="servicos row">
+            {% verbatim %}
+                <div class="col-md-6" v-for="item in servicos">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            {{ item.servicoUnidade.sigla }} - {{ item.servicoUnidade.servico.nome }}
+                        </div>
+                        <div class="panel-body">
+                            <ul class="fila list-inline">
+                                <li v-for="atendimento in item.fila" v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }">
+                                    <a href="#" v-on:click="view(atendimento)" v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.espera + ')'">
+                                        {{atendimento.senha.format}}
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            {% endverbatim %}
+        </div>
+        
+        {# busca #}
+        <div id="dialog-busca" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">
+                            {% trans %}Busca{% endtrans %}
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <form class="form-inline" role="form" v-on:submit.prevent="consultar">
+                            <div class="form-group">
+                                <input type="text" maxlength="5" class="form-search form-control" placeholder="{% trans %}Número{% endtrans %}" v-model="search" />
+                            </div>
+                            <button class="btn btn-primary">
+                                {% trans %}Consultar{% endtrans %}
+                            </button>
+                        </form>
+                        <div class="result">
+                            <table id="result_table" class="table">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            {% trans %}Número{% endtrans %}
+                                        </th>
+                                        <th>
+                                            {% trans %}Serviço{% endtrans %}
+                                        </th>
+                                        <th>
+                                            {% trans %}Data chegada{% endtrans %}
+                                        </th>
+                                        <th>
+                                            {% trans %}Data início{% endtrans %}
+                                        </th>
+                                        <th>
+                                            {% trans %}Data fim{% endtrans %}
+                                        </th>
+                                        <th>
+                                            {% trans %}Triagem{% endtrans %}
+                                        </th>
+                                        <th>
+                                            {% trans %}Atendente{% endtrans %}
+                                        </th>
+                                        <th>
+                                            {% trans %}Situação{% endtrans %}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% verbatim %}
+                                        <tr v-for="atendimento in searchResult" v-bind:class="{danger: (atendimento.status === 5 || atendimento.status === 6)}">
+                                            <td>
+                                                <a href="#" v-on:click="view(atendimento)">
+                                                    {{atendimento.senha.format}}
+                                                </a>
+                                            </td>
+                                            <td>
+                                                {{atendimento.servico.nome}}
+                                            </td>
+                                            <td>
+                                                {{atendimento.chegada}}
+                                            </td>
+                                            <td>
+                                                {{atendimento.inicio}}
+                                            </td>
+                                            <td>
+                                                {{atendimento.fim}}
+                                            </td>
+                                            <td>
+                                                {{atendimento.triagem}}
+                                            </td>
+                                            <td>
+                                                {{atendimento.usuario}}
+                                            </td>
+                                            <td>
+                                                {{atendimento.status}}
+                                            </td>
+                                        </tr>
+                                    {% endverbatim %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-        {% endfor %}
-    </div>
 
-    {# busca #}
-    <div id="dialog-busca" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">{% trans %}Busca{% endtrans %}</h4>
-                </div>
-                <div class="modal-body">
-                    <form class="form-inline" role="form" onsubmit="return false">
-                        <div class="form-group">
-                            <input id="numero_busca" type="text" maxlength="5" class="form-search form-control" placeholder="{% trans %}Número{% endtrans %}" />
-                        </div>
-                        <button id="btn-consultar" class="btn btn-primary" onclick="App.Monitor.Senha.consultar()">{% trans %}Consultar{% endtrans %}</button>
-                    </form>
-                    <div class="result">
-                        <table id="result_table" class="table">
-                            <thead>
+        {# view #}
+        <div id="dialog-view" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title">{% trans %}Atendimento{% endtrans %}</h4>
+                    </div>
+                    <div class="modal-body" v-if="atendimento">
+                        <input type="hidden" v-bind:valuee="atendimento.id" />
+                        <fieldset>
+                            <legend>{% trans %}Senha|Bilhete{% endtrans %}</legend>
+                            <table class="table table-bordered">
                                 <tr>
-                                    <th>{% trans %}Número{% endtrans %}</th>
-                                    <th>{% trans %}Serviço{% endtrans %}</th>
-                                    <th>{% trans %}Data chegada{% endtrans %}</th>
-                                    <th>{% trans %}Data início{% endtrans %}</th>
-                                    <th>{% trans %}Data fim{% endtrans %}</th>
-                                    <th>{% trans %}Triagem{% endtrans %}</th>
-                                    <th>{% trans %}Atendente{% endtrans %}</th>
-                                    <th>{% trans %}Situação{% endtrans %}</th>
+                                    <th class="col-sm-4">
+                                        {% trans %}Número{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.senha.format}}
+                                        {% endverbatim %}
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
+                                <tr>
+                                    <th>
+                                        {% trans %}Prioridade{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.prioridade.nome}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        <label>{% trans %}Serviço{% endtrans %}</label>
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.servico.nome}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {% trans %}Data chegada{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.chegada}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {% trans %}Tempo de espera{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.espera}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {% trans %}Data início{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.inicio}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {% trans %}Data fim{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.fim}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {% trans %}Situação{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.status}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                                
+                                
+                        <fieldset v-if="atendimento.cliente">
+                            <legend>{% trans %}Cliente{% endtrans %}</legend>
+                            <table class="table table-bordered">
+                                <tr>
+                                    <th class="col-sm-4">
+                                        {% trans %}Nome{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.cliente.nome}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>
+                                        {% trans %}Documento{% endtrans %}
+                                    </th>
+                                    <td>
+                                        {% verbatim %}
+                                            {{atendimento.cliente.documento}}
+                                        {% endverbatim %}
+                                    </td>
+                                </tr>
+                            </table>
+                        </fieldset>
+                    </div>
+                    <div class="modal-footer" v-if="atendimento">
+                        <button class="btn btn-primary" v-on:click="reativar(atendimento)" v-if="atendimento.status === 5 || atendimento.status === 6">
+                            {% trans %}Reativar senha{% endtrans %}
+                        </button>
+
+                        <button class="btn btn-default" v-on:click="transfere(atendimento)" v-if="atendimento.status === 1">
+                            {% trans %}Transferir / Alterar senha{% endtrans %}
+                        </button>
+
+                        <button class="btn btn-danger" v-on:click="cancelar(atendimento)" v-if="atendimento.status === 1">
+                            {% trans %}Cancelar senha{% endtrans %}
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# view #}
-    <div id="dialog-view" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">{% trans %}Atendimento{% endtrans %}</h4>
-                </div>
-                <div class="modal-body">
-                    <input id="senha_id" type="hidden" />
-                    <fieldset>
-                        <legend>{% trans %}Senha|Bilhete{% endtrans %}</legend>
-                        <div>
-                            <label>{% trans %}Número{% endtrans %}</label>
-                            <span id="senha_numero"></span>
+        {# transfere #}
+        <div id="dialog-transfere" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                {{ form_start(transferirForm, { attr: { 'v-on:submit.prevent': 'transferir(atendimento, novoServico, novaPrioridade)' } }) }}
+                    <div class="modal-content" v-if="atendimento">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <h4 class="modal-title">
+                                {% trans %}Tranferir Senha{% endtrans %}
+                                <span class="badge">
+                                    {% verbatim %}
+                                        {{atendimento.senha.format}}
+                                    {% endverbatim %}
+                                </span>
+                            </h4>
                         </div>
-                        <div>
-                            <label>{% trans %}Prioridade{% endtrans %}</label>
-                            <span id="senha_prioridade"></span>
+                        <div class="modal-body">
+                            
+                            {{ form_row(transferirForm.servico, { attr: { 'v-model': 'novoServico' } }) }}
+                            
+                            {{ form_row(transferirForm.prioridade, { attr: { 'v-model': 'novaPrioridade' } }) }}
+                            
                         </div>
-                        <div>
-                            <label>{% trans %}Serviço{% endtrans %}</label>
-                            <span id="senha_servico"></span>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">
+                                {% trans %}Transferir{% endtrans %}
+                            </button>
                         </div>
-                        <div>
-                            <label>{% trans %}Data chegada{% endtrans %}</label>
-                            <span id="senha_chegada"></span>
-                        </div>
-                        <div>
-                            <label>{% trans %}Tempo de espera{% endtrans %}</label>
-                            <span id="senha_espera"></span>
-                        </div>
-                        <div>
-                            <label>{% trans %}Data início{% endtrans %}</label>
-                            <span id="senha_inicio"></span>
-                        </div>
-                        <div>
-                            <label>{% trans %}Data fim{% endtrans %}</label>
-                            <span id="senha_fim"></span>
-                        </div>
-                        <div>
-                            <label>{% trans %}Situação{% endtrans %}</label>
-                            <span id="senha_status"></span>
-                        </div>
-                    </fieldset>
-                    <fieldset>
-                        <legend>{% trans %}Cliente{% endtrans %}</legend>
-                        <div>
-                            <label>{% trans %}Nome{% endtrans %}</label>
-                            <span id="cliente_nome"></span>
-                        </div>
-                        <div>
-                            <label>{% trans %}Documento{% endtrans %}</label>
-                            <span id="cliente_documento"></span>
-                        </div>
-                    </fieldset>
-                </div>
-                <div class="modal-footer">
-                    <button id="btn-reativar"
-                            class="btn btn-primary"
-                            onclick="App.Monitor.Senha.reativar($('#senha_id').val())">
-                        {% trans %}Reativar senha{% endtrans %}
-                    </button>
-                    <button id="btn-transferir"
-                            class="btn btn-default"
-                            onclick="App.Monitor.Senha.transfere($('#senha_id').val(), $('#senha_numero').text())">
-                        {% trans %}Transferir / Alterar senha{% endtrans %}
-                    </button>
-                    <button id="btn-cancelar"
-                            class="btn btn-danger"
-                            onclick="App.Monitor.Senha.cancelar($('#senha_id').val())">
-                        {% trans %}Cancelar senha{% endtrans %}
-                    </button>
-                </div>
+                    </div>
+                {{ form_end(transferirForm) }}
             </div>
         </div>
-    </div>
 
-    {# transfere #}
-    <div id="dialog-transfere" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title">{% trans %}Tranferir Senha{% endtrans %}</h4>
-                </div>
-                <div class="modal-body">
-                    <input id="transfere_id" type="hidden" />
-                    <div class="form-group">
-                        <label>{% trans %}Senha|Bilhete{% endtrans %}</label>
-                        <span id="transfere_numero"></span>
-                    </div>
-                    <div class="form-group">
-                        <label for="transfere_servico">{% trans %}Novo serviço{% endtrans %}</label>
-                        <select id="transfere_servico" class="form-control">
-                            {% for su in servicos %}
-                            <option value="{{ su.servico.id }}">{{ su.servico.nome }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>{% trans %}Nova prioridade{% endtrans %}</label>
-                        <select id="transfere_prioridade" class="form-control">
-                            {% for prioridade in prioridades %}
-                            <option value="{{ prioridade.id }}">{{ prioridade.nome }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button id="btn-transferir"
-                            class="btn btn-primary"
-                            onclick="App.Monitor.Senha.transferir()">
-                        {% trans %}Transferir{% endtrans %}
-                    </button>
-                </div>
-            </div>
-        </div>
+        <div id="sga-clock" title="{% trans %}Data e hora no servidor{% endtrans %}}"></div>
     </div>
-
-    <div id="sga-clock" title="{% trans %}Data e hora no servidor{% endtrans %}}"></div>
 {% endblock %}
 
 {% block stylesheets %}
@@ -192,15 +312,13 @@
 
 {% block javascripts %}
     {{ parent() }}
+    <script type="text/javascript">
+        var ids = [{% for su in servicos %}{{su.servico.id}},{% endfor %}];
+    </script>
     <script type="text/javascript" src="{{ asset('bundles/novosgamonitor/js/script.js') }}"></script>
     <script type="text/javascript">
-        $('.servico').each(function(i,v) {
-            var servico = $(v);
-            App.Monitor.ids.push(servico.data('id'));
-        });
         App.Clock.init("sga-clock", {{ milis }});
         App.Monitor.alertCancelar = '{% trans %}Deseja realmente cancelar essa senha?{% endtrans %}';
         App.Monitor.alertReativar = '{% trans %}Deseja realmente reativar essa senha?{% endtrans %}';
-        App.Monitor.init();
     </script>
 {% endblock %}
