@@ -33,7 +33,8 @@ class DefaultController extends Controller
      */
     public function indexAction(Request $request)
     {
-        $unidade = $request->getSession()->get('unidade');
+        $usuario = $this->getUser();
+        $unidade = $usuario->getLotacao()->getUnidade();
         $servicos = $this->servicos($unidade, 'e.status = 1');
         
         $transferirForm = $this->createTransferirForm($request);
@@ -60,7 +61,8 @@ class DefaultController extends Controller
      */
     private function createTransferirForm(Request $request)
     {
-        $unidade = $request->getSession()->get('unidade');
+        $usuario = $this->getUser();
+        $unidade = $usuario->getLotacao()->getUnidade();
         $servicos = $this->servicos($unidade, 'e.status = 1');
         
         $transferirForm = $this->createForm(TransferirType::class, null, [
@@ -85,7 +87,8 @@ class DefaultController extends Controller
         $em = $this->getDoctrine()->getManager();
 
         $envelope = new Envelope();
-        $unidade = $request->getSession()->get('unidade');
+        $usuario = $this->getUser();
+        $unidade = $usuario->getLotacao()->getUnidade();
         $filaService = new FilaService($em);
         
         try {
@@ -137,12 +140,10 @@ class DefaultController extends Controller
     public function infoSenhaAction(Request $request, Atendimento $atendimento)
     {
         $envelope = new Envelope();
-        $unidade = $request->getSession()->get('unidade');
         
         try {
-            if (!$unidade) {
-                throw new Exception(_('Nenhuma unidade escolhida'));
-            }
+            $usuario = $this->getUser();
+            $unidade = $usuario->getLotacao()->getUnidade();
             
             $this->checkAtendimento($unidade, $atendimento);
             
@@ -165,14 +166,11 @@ class DefaultController extends Controller
     public function buscarAction(Request $request)
     {
         $em = $this->getDoctrine()->getManager();
-        $data = [];
-        $unidade = $request->getSession()->get('unidade');
         $envelope = new Envelope();
         
         try {
-            if (!$unidade) {
-                throw new Exception(_('Nenhuma unidade selecionada'));
-            }
+            $usuario = $this->getUser();
+            $unidade = $usuario->getLotacao()->getUnidade();
             
             $numero = $request->get('numero');
             $service = new AtendimentoService($em);
@@ -199,10 +197,8 @@ class DefaultController extends Controller
         $envelope = new Envelope();
         
         try {
-            $unidade = $request->getSession()->get('unidade');
-            if (!$unidade) {
-                throw new Exception(_('Nenhuma unidade selecionada'));
-            }
+            $usuario = $this->getUser();
+            $unidade = $usuario->getLotacao()->getUnidade();
             
             $this->checkAtendimento($unidade, $atendimento);
             
@@ -244,10 +240,8 @@ class DefaultController extends Controller
         $envelope = new Envelope();
         
         try {
-            $unidade = $request->getSession()->get('unidade');
-            if (!$unidade) {
-                throw new Exception(_('Nenhuma unidade selecionada'));
-            }
+            $usuario = $this->getUser();
+            $unidade = $usuario->getLotacao()->getUnidade();
             
             $conn = $em->getConnection();
             $status = implode(',', [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU]);
@@ -288,10 +282,8 @@ class DefaultController extends Controller
         $envelope = new Envelope();
         
         try {
-            $unidade = $request->getSession()->get('unidade');
-            if (!$unidade) {
-                throw new Exception(_('Nenhuma unidade selecionada'));
-            }
+            $usuario = $this->getUser();
+            $unidade = $usuario->getLotacao()->getUnidade();
             
             $this->checkAtendimento($unidade, $atendimento);
             $service = new AtendimentoService($em);
