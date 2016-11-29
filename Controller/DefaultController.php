@@ -39,7 +39,7 @@ class DefaultController extends Controller
         
         $transferirForm = $this->createTransferirForm($request);
 
-        return $this->render('NovosgaMonitorBundle:Default:index.html.twig', [
+        return $this->render('NovosgaMonitorBundle:default:index.html.twig', [
             'unidade' => $unidade,
             'servicos' => $servicos,
             'transferirForm' => $transferirForm->createView(),
