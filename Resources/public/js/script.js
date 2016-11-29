@@ -64,7 +64,7 @@ App.Monitor = {
             view: function(atendimento) {
                 var self = this;
                 App.ajax({
-                    url: App.url('/novosga.monitor/info_senha') + '/' + atendimento.id,
+                    url: App.url('/novosga.monitor/info_senha/') + atendimento.id,
                     success: function(response) {
                         self.atendimento = response.data;
                         $('#dialog-view').modal('show');
@@ -98,7 +98,7 @@ App.Monitor = {
 
             transferir: function(atendimento, novoServico, novaPrioridade) {
                 App.ajax({
-                    url: App.url('/novosga.monitor/transferir') + '/' + atendimento.id,
+                    url: App.url('/novosga.monitor/transferir/') + atendimento.id,
                     type: 'post',
                     data: {
                         servico: novoServico,
@@ -113,7 +113,7 @@ App.Monitor = {
             reativar: function(atendimento) {
                 if (window.confirm(App.Monitor.alertReativar)) {
                     App.ajax({
-                        url: App.url('/novosga.monitor/reativar') + '/' + atendimento.id,
+                        url: App.url('/novosga.monitor/reativar/') + atendimento.id,
                         type: 'post',
                         success: function() {
                             $('.modal').modal('hide');
@@ -125,7 +125,7 @@ App.Monitor = {
             cancelar: function(atendimento) {
                 if (window.confirm(App.Monitor.alertCancelar)) {
                     App.ajax({
-                        url: App.url('/novosga.monitor/cancelar') + '/' + atendimento.id,
+                        url: App.url('/novosga.monitor/cancelar/') + atendimento.id,
                         type: 'post',
                         success: function() {
                             $('.modal').modal('hide');
