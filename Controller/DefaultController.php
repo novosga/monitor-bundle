@@ -18,7 +18,6 @@ use Novosga\Entity\Atendimento;
 use Novosga\Service\AtendimentoService;
 use Novosga\Service\FilaService;
 use Novosga\Service\ServicoService;
-use Novosga\Util\Arrays;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -106,8 +105,7 @@ class DefaultController extends Controller
             }
             
             $data = [];
-            $ids = $request->get('ids');
-            $ids = Arrays::valuesToInt(explode(',', $ids));
+            $ids = explode(',', $request->get('ids'));
             
             if (count($ids)) {
                 $servicos = $this->servicos($unidade, ' e.servico IN ('.implode(',', $ids).') ');
