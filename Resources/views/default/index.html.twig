@@ -25,6 +25,9 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             {{ item.servicoUnidade.sigla }} - {{ item.servicoUnidade.servico.nome }}
+                            <span class="badge pull-right">
+                                {{ item.fila.length }}
+                            </span>
                         </div>
                         <div class="panel-body">
                             <ul class="fila list-inline">
