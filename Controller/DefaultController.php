@@ -43,7 +43,7 @@ class DefaultController extends Controller
     {
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
-        $servicos = $this->servicos($unidade, 'e.status = 1');
+        $servicos = $this->servicos($unidade, 'e.ativo = TRUE');
         
         $transferirForm = $this->createTransferirForm($request);
 
@@ -71,13 +71,13 @@ class DefaultController extends Controller
     {
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
-        $servicos = $this->servicos($unidade, 'e.status = 1');
+        $servicos = $this->servicos($unidade, 'e.ativo = TRUE');
         
         $transferirForm = $this->createForm(TransferirType::class, null, [
             'csrf_protection' => false,
             'servicos' => array_map(function ($su) {
                             return $su->getServico();
-                        }, $servicos)
+            }, $servicos)
         ]);
         
         return $transferirForm;
@@ -138,10 +138,10 @@ class DefaultController extends Controller
     }
 
     /**
-     * 
+     *
      * @param Request $request
      * @return Response
-     * 
+     *
      * @Route("/info_senha/{id}", name="novosga_monitor_infosenha")
      */
     public function infoSenhaAction(Request $request, Atendimento $atendimento)
@@ -167,7 +167,7 @@ class DefaultController extends Controller
      * Busca os atendimentos a partir do número da senha.
      *
      * @param Request $request
-     * 
+     *
      * @Route("/buscar", name="novosga_monitor_buscar")
      */
     public function buscarAction(Request $request)
@@ -194,7 +194,7 @@ class DefaultController extends Controller
      * Transfere o atendimento para outro serviço e prioridade.
      *
      * @param Request $request
-     * 
+     *
      * @Route("/transferir/{id}", name="novosga_monitor_transferir")
      * @Method("POST")
      */
@@ -220,10 +220,10 @@ class DefaultController extends Controller
 
             $service = new AtendimentoService($em);
             $service->transferir(
-                    $atendimento, 
-                    $unidade, 
-                    $transferirForm->get('servico')->getData(), 
-                    $transferirForm->get('prioridade')->getData()
+                $atendimento,
+                $unidade,
+                $transferirForm->get('servico')->getData(),
+                $transferirForm->get('prioridade')->getData()
             );
         } catch (Exception $e) {
             $envelope->exception($e);
@@ -237,7 +237,7 @@ class DefaultController extends Controller
      * Só pode reativar atendimentos que foram: Cancelados ou Não Compareceu.
      *
      * @param Request $request
-     * 
+     *
      * @Route("/reativar/{id}", name="novosga_monitor_reativar")
      * @Method("POST")
      */
@@ -279,7 +279,7 @@ class DefaultController extends Controller
      * Atualiza o status da senha para cancelado.
      *
      * @param Request $request
-     * 
+     *
      * @Route("/cancelar/{id}", name="novosga_monitor_cancelar")
      * @Method("POST")
      */

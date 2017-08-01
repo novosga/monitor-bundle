@@ -37,7 +37,7 @@ App.Monitor = {
             novaPrioridade: ''
         },
         methods: {
-            ajaxUpdate: function() {
+            ajaxUpdate: function () {
                 var self = this;
                 clearTimeout(App.Monitor.timeoutId);
                 if (!App.paused) {
@@ -46,10 +46,10 @@ App.Monitor = {
                         data: {
                             ids: ids.join(',')
                         },
-                        success: function(response) {
+                        success: function (response) {
                             self.servicos = response.data;
                         },
-                        complete: function() {
+                        complete: function () {
                             App.Monitor.timeoutId = setTimeout(self.ajaxUpdate, App.updateInterval);
                         }
                     });
@@ -61,23 +61,23 @@ App.Monitor = {
             /**
              * Busca informacoes do atendimento pelo id.
              */
-            view: function(atendimento) {
+            view: function (atendimento) {
                 var self = this;
                 App.ajax({
                     url: App.url('/novosga.monitor/info_senha/') + atendimento.id,
-                    success: function(response) {
+                    success: function (response) {
                         self.atendimento = response.data;
                         $('#dialog-view').modal('show');
                     }
                 });
             },
 
-            consulta: function() {
+            consulta: function () {
                 $('#dialog-busca').modal('show');
                 this.consultar();
             },
 
-            consultar: function() {
+            consultar: function () {
                 var self = this;
                 
                 App.ajax({
@@ -85,18 +85,18 @@ App.Monitor = {
                     data: {
                         numero: self.search
                     },
-                    success: function(response) {
+                    success: function (response) {
                         self.searchResult = response.data;
                     }
                 });
             },
 
-            transfere: function(atendimento) {
+            transfere: function (atendimento) {
                 this.atendimento = atendimento;
                 $('#dialog-transfere').modal('show');
             },
 
-            transferir: function(atendimento, novoServico, novaPrioridade) {
+            transferir: function (atendimento, novoServico, novaPrioridade) {
                 App.ajax({
                     url: App.url('/novosga.monitor/transferir/') + atendimento.id,
                     type: 'post',
@@ -104,37 +104,37 @@ App.Monitor = {
                         servico: novoServico,
                         prioridade: novaPrioridade
                     },
-                    success: function() {
+                    success: function () {
                         $('.modal').modal('hide');
                     }
                 });
             },
 
-            reativar: function(atendimento) {
+            reativar: function (atendimento) {
                 if (window.confirm(App.Monitor.alertReativar)) {
                     App.ajax({
                         url: App.url('/novosga.monitor/reativar/') + atendimento.id,
                         type: 'post',
-                        success: function() {
+                        success: function () {
                             $('.modal').modal('hide');
                         }
                     });
                 }
             },
 
-            cancelar: function(atendimento) {
+            cancelar: function (atendimento) {
                 if (window.confirm(App.Monitor.alertCancelar)) {
                     App.ajax({
                         url: App.url('/novosga.monitor/cancelar/') + atendimento.id,
                         type: 'post',
-                        success: function() {
+                        success: function () {
                             $('.modal').modal('hide');
                         }
                     });
                 }
             },
             
-            init: function() {
+            init: function () {
                 this.ajaxUpdate();
             }
         },

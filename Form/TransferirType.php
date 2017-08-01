@@ -38,7 +38,7 @@ class TransferirType extends AbstractType
                 'class' => Prioridade::class,
                 'query_builder' => function (EntityRepository $repo) {
                         return $repo->createQueryBuilder('e')
-                                ->where('e.status = 1')
+                                ->where('e.ativo = TRUE')
                                 ->orderBy('e.peso', 'ASC')
                                 ->addOrderBy('e.nome', 'ASC');
                 },
@@ -57,5 +57,4 @@ class TransferirType extends AbstractType
     {
         return null;
     }
-
 }
