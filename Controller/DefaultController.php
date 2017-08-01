@@ -251,7 +251,7 @@ class DefaultController extends Controller
             $unidade = $usuario->getLotacao()->getUnidade();
             
             $conn = $em->getConnection();
-            $status = implode(',', [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU]);
+            $status = "'" . implode("','", [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU]) . "'";
             // reativa apenas se estiver finalizada (data fim diferente de nulo)
             $stmt = $conn->prepare("
                 UPDATE

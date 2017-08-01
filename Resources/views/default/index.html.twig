@@ -94,9 +94,9 @@
                                 </thead>
                                 <tbody>
                                     {% verbatim %}
-                                        <tr v-for="atendimento in searchResult" v-bind:class="{danger: (atendimento.status === 5 || atendimento.status === 6)}">
+                                        <tr v-for="atendimento in searchResult" v-bind:class="{danger: (atendimento.status === 'nao_compareceu' || atendimento.status === 'cancelada')}">
                                             <td>
-                                                <a href="#" v-on:click="view(atendimento)">
+                                                <a href="#" v-on:click.prevent="view(atendimento)">
                                                     {{atendimento.senha.format}}
                                                 </a>
                                             </td>
@@ -255,15 +255,15 @@
                         </fieldset>
                     </div>
                     <div class="modal-footer" v-if="atendimento">
-                        <button class="btn btn-primary" v-on:click="reativar(atendimento)" v-if="atendimento.status === 5 || atendimento.status === 6">
+                        <button type="button" class="btn btn-primary" v-on:click="reativar(atendimento)" v-if="atendimento.status === 'cancelada' || atendimento.status === 'nao_compareceu'">
                             {% trans %}Reativar senha{% endtrans %}
                         </button>
 
-                        <button class="btn btn-default" v-on:click="transfere(atendimento)" v-if="atendimento.status === 1">
+                        <button type="button" class="btn btn-default" v-on:click="transfere(atendimento)" v-if="atendimento.status === 'emitida'">
                             {% trans %}Transferir / Alterar senha{% endtrans %}
                         </button>
 
-                        <button class="btn btn-danger" v-on:click="cancelar(atendimento)" v-if="atendimento.status === 1">
+                        <button type="button" class="btn btn-danger" v-on:click="cancelar(atendimento)" v-if="atendimento.status === 'emitida'">
                             {% trans %}Cancelar senha{% endtrans %}
                         </button>
                     </div>
@@ -321,6 +321,9 @@
     <script type="text/javascript" src="{{ asset('bundles/novosgamonitor/js/script.js') }}"></script>
     <script type="text/javascript">
         App.Clock.init("sga-clock", {{ milis }});
+        App.Monitor.labelSim = '{% trans %}Sim{% endtrans %}';
+        App.Monitor.labelNao = '{% trans %}Não{% endtrans %}';
+        App.Monitor.alertTitle = '{% trans %}Atenção!{% endtrans %}';
         App.Monitor.alertCancelar = '{% trans %}Deseja realmente cancelar essa senha?{% endtrans %}';
         App.Monitor.alertReativar = '{% trans %}Deseja realmente reativar essa senha?{% endtrans %}';
     </script>

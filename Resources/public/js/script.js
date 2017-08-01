@@ -5,21 +5,20 @@
 var App = App || {};
 
 App.Monitor = {
-
     ids: [],
+    labelSim: '',
+    labelNao: '',
     labelTransferir: '',
     alertCancelar: '',
     alertReativar: '',
+    alertTitle: '',
     timeoutId: 0,
     
     Senha: {
-
         dialogView: '#dialog-view',
         dialogSearch: '#dialog-busca',
         dialogTransfere: '#dialog-transfere',
-        
     }
-
 };
 
 
@@ -110,8 +109,16 @@ App.Monitor = {
                 });
             },
 
-            reativar: function (atendimento) {
-                if (window.confirm(App.Monitor.alertReativar)) {
+            reativar: function(atendimento) {
+                swal({
+                    title: App.Monitor.alertTitle,
+                    text: App.Monitor.alertReativar,
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: App.Monitor.labelNao,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: App.Monitor.labelSim,
+                }, function(){
                     App.ajax({
                         url: App.url('/novosga.monitor/reativar/') + atendimento.id,
                         type: 'post',
@@ -119,11 +126,19 @@ App.Monitor = {
                             $('.modal').modal('hide');
                         }
                     });
-                }
+                });
             },
 
-            cancelar: function (atendimento) {
-                if (window.confirm(App.Monitor.alertCancelar)) {
+            cancelar: function(atendimento) {
+                swal({
+                    title: App.Monitor.alertTitle,
+                    text: App.Monitor.alertCancelar,
+                    type: "warning",
+                    showCancelButton: true,
+                    cancelButtonText: App.Monitor.labelNao,
+                    confirmButtonColor: "#DD6B55",
+                    confirmButtonText: App.Monitor.labelSim,
+                }, function(){
                     App.ajax({
                         url: App.url('/novosga.monitor/cancelar/') + atendimento.id,
                         type: 'post',
@@ -131,7 +146,7 @@ App.Monitor = {
                             $('.modal').modal('hide');
                         }
                     });
-                }
+                });
             },
             
             init: function () {
