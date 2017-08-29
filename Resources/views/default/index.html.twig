@@ -15,23 +15,23 @@
                 <input type="text" class="form-search form-control" placeholder="{% trans %}buscar senha{% endtrans %}" v-model="search">
             </div>
             <button type="submit" class="btn btn-primary">
-                <span class="glyphicon glyphicon-search"></span>&nbsp;
+                <i class="fa fa-search"></i>&nbsp;
                 {% trans %}Consultar{% endtrans %}
             </button>
         </form>
         <div class="servicos row">
             {% verbatim %}
                 <div class="col-md-6" v-for="item in servicos">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
+                    <div class="card">
+                        <div class="card-header">
                             {{ item.servicoUnidade.sigla }} - {{ item.servicoUnidade.servico.nome }}
                             <span class="badge pull-right">
                                 {{ item.fila.length }}
                             </span>
                         </div>
-                        <div class="panel-body">
+                        <div class="card-body">
                             <ul class="fila list-inline">
-                                <li v-for="atendimento in item.fila" v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }">
+                                <li v-for="atendimento in item.fila" v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }" class="list-inline-item">
                                     <a href="#" v-on:click="view(atendimento)" v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.espera + ')'">
                                         {{atendimento.senha.format}}
                                     </a>
@@ -48,10 +48,8 @@
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <h5 class="modal-title">{% trans %}Busca{% endtrans %}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">
-                            {% trans %}Busca{% endtrans %}
-                        </h4>
                     </div>
                     <div class="modal-body">
                         <form class="form-inline" role="form" v-on:submit.prevent="consultar">
@@ -63,7 +61,7 @@
                             </button>
                         </form>
                         <div class="result">
-                            <table id="result_table" class="table">
+                            <table class="table table-bordered">
                                 <thead>
                                     <tr>
                                         <th>
@@ -136,8 +134,8 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
+                        <h5 class="modal-title">{% trans %}Atendimento{% endtrans %}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title">{% trans %}Atendimento{% endtrans %}</h4>
                     </div>
                     <div class="modal-body" v-if="atendimento">
                         <input type="hidden" v-bind:valuee="atendimento.id" />
@@ -259,7 +257,7 @@
                             {% trans %}Reativar senha{% endtrans %}
                         </button>
 
-                        <button type="button" class="btn btn-default" v-on:click="transfere(atendimento)" v-if="atendimento.status === 'emitida'">
+                        <button type="button" class="btn btn-secondary" v-on:click="transfere(atendimento)" v-if="atendimento.status === 'emitida'">
                             {% trans %}Transferir / Alterar senha{% endtrans %}
                         </button>
 
@@ -277,15 +275,15 @@
                 {{ form_start(transferirForm, { attr: { 'v-on:submit.prevent': 'transferir(atendimento, novoServico, novaPrioridade)' } }) }}
                     <div class="modal-content" v-if="atendimento">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                            <h4 class="modal-title">
+                            <h5 class="modal-title">
                                 {% trans %}Tranferir Senha{% endtrans %}
                                 <span class="badge">
                                     {% verbatim %}
                                         {{atendimento.senha.format}}
                                     {% endverbatim %}
                                 </span>
-                            </h4>
+                            </h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                         </div>
                         <div class="modal-body">
                             
