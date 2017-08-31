@@ -16,8 +16,6 @@ use Novosga\Http\Envelope;
 use Novosga\Entity\Unidade;
 use Novosga\Entity\Atendimento;
 use Novosga\Service\AtendimentoService;
-use Novosga\Service\FilaService;
-use Novosga\Service\ServicoService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -57,11 +55,11 @@ class DefaultController extends Controller
 
     private function servicos(Unidade $unidade, $where = '')
     {
-        $em = $this->getDoctrine()->getManager();
+        /* @var $servicoService \Novosga\Service\ServicoService */
+        $servicoService = $this->get('Novosga\Service\ServicoService');
+        $servicos = $servicoService->servicosUnidade($unidade, $where);
 
-        $service = new ServicoService($em);
-
-        return $service->servicosUnidade($unidade, $where);
+        return $servicos;
     }
     
     /**
@@ -92,12 +90,11 @@ class DefaultController extends Controller
      */
     public function ajaxUpdateAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
-
         $envelope = new Envelope();
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
-        $filaService = new FilaService($em);
+        /* @var $filaService \Novosga\Service\FilaService */
+        $filaService = $this->get('Novosga\Service\FilaService');
         
         try {
             if (!$unidade) {
@@ -172,16 +169,17 @@ class DefaultController extends Controller
      */
     public function buscarAction(Request $request)
     {
-        $em = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
         
         try {
+            /* @var $atendimentoService \Novosga\Service\AtendimentoService */
+            $atendimentoService = $this->get('Novosga\Service\AtendimentoService');
+            
             $usuario = $this->getUser();
             $unidade = $usuario->getLotacao()->getUnidade();
-            
             $numero = $request->get('numero');
-            $service = new AtendimentoService($em);
-            $atendimentos = $service->buscaAtendimentos($unidade, $numero);
+            
+            $atendimentos = $atendimentoService->buscaAtendimentos($unidade, $numero);
             $envelope->setData($atendimentos);
         } catch (Exception $e) {
             $envelope->exception($e);
@@ -200,7 +198,6 @@ class DefaultController extends Controller
      */
     public function transferirAction(Request $request, Atendimento $atendimento)
     {
-        $em = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
         
         try {
@@ -218,8 +215,9 @@ class DefaultController extends Controller
                 throw new Exception(_('Formulário inválido'));
             }
 
-            $service = new AtendimentoService($em);
-            $service->transferir(
+            /* @var $atendimentoService \Novosga\Service\AtendimentoService */
+            $atendimentoService = $this->get('Novosga\Service\AtendimentoService');
+            $atendimentoService->transferir(
                 $atendimento,
                 $unidade,
                 $transferirForm->get('servico')->getData(),
@@ -285,7 +283,6 @@ class DefaultController extends Controller
      */
     public function cancelarAction(Request $request, Atendimento $atendimento)
     {
-        $em = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
         
         try {
@@ -293,8 +290,9 @@ class DefaultController extends Controller
             $unidade = $usuario->getLotacao()->getUnidade();
             
             $this->checkAtendimento($unidade, $atendimento);
-            $service = new AtendimentoService($em);
-            $service->cancelar($atendimento, $unidade);
+            /* @var $atendimentoService \Novosga\Service\AtendimentoService */
+            $atendimentoService = $this->get('Novosga\Service\AtendimentoService');
+            $atendimentoService->cancelar($atendimento, $unidade);
         } catch (Exception $e) {
             $envelope->exception($e);
         }
