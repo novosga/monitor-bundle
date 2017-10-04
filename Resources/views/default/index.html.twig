@@ -287,9 +287,9 @@
                         </div>
                         <div class="modal-body">
                             
-                            {{ form_row(transferirForm.servico, { attr: { 'v-model': 'novoServico' } }) }}
+                            {{ form_row(transferirForm.servico, { label: 'Novo serviço', attr: { 'v-model': 'novoServico' } }) }}
                             
-                            {{ form_row(transferirForm.prioridade, { attr: { 'v-model': 'novaPrioridade' } }) }}
+                            {{ form_row(transferirForm.prioridade, { label: 'Nova prioridade', attr: { 'v-model': 'novaPrioridade' } }) }}
                             
                         </div>
                         <div class="modal-footer">
@@ -314,8 +314,10 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        var ids = [{% for su in servicos %}{{su.servico.id}},{% endfor %}];
+        var ids = [{% for su in servicos %}{{su.servico.id}},{% endfor %}],
+            unidade = {{ unidade|json_encode()|raw }};
     </script>
+    <script type="text/javascript" src="{{ asset('bundles/novosgamonitor/js/sweetalert.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/novosgamonitor/js/script.js') }}"></script>
     <script type="text/javascript">
         App.Clock.init("sga-clock", {{ milis }});
@@ -324,5 +326,6 @@
         App.Monitor.alertTitle = '{% trans %}Atenção!{% endtrans %}';
         App.Monitor.alertCancelar = '{% trans %}Deseja realmente cancelar essa senha?{% endtrans %}';
         App.Monitor.alertReativar = '{% trans %}Deseja realmente reativar essa senha?{% endtrans %}';
+        App.Monitor.alertTransferir = '{% trans %}Deseja realmente transferir essa senha?{% endtrans %}';
     </script>
 {% endblock %}

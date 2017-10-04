@@ -28,6 +28,7 @@ App.Monitor = {
     var app = new Vue({
         el: '#monitor',
         data: {
+            unidade: (unidade || {}),
             search: '',
             searchResult: [],
             servicos: [],
@@ -36,25 +37,49 @@ App.Monitor = {
             novaPrioridade: ''
         },
         methods: {
-            ajaxUpdate: function () {
+            init: function () {
                 var self = this;
-                clearTimeout(App.Monitor.timeoutId);
-                if (!App.paused) {
-                    App.ajax({
-                        url: App.url('/novosga.monitor/ajax_update'),
-                        data: {
-                            ids: ids.join(',')
-                        },
-                        success: function (response) {
-                            self.servicos = response.data;
-                        },
-                        complete: function () {
-                            App.Monitor.timeoutId = setTimeout(self.ajaxUpdate, App.updateInterval);
-                        }
+                
+                App.Websocket.connect();
+
+                App.Websocket.on('connect', function () {
+                    console.log('connected!');
+                    App.Websocket.emit('register user', {
+                        unidade: self.unidade.id
                     });
-                } else {
-                    App.Monitor.timeoutId = setTimeout(self.ajaxUpdate, App.updateInterval);
-                }
+                });
+
+                App.Websocket.on('disconnect', function () {
+                    console.log('disconnected!');
+                });
+
+                App.Websocket.on('error', function () {
+                    console.log('error');
+                });
+
+                App.Websocket.on('register ok', function () {
+                    console.log('registered!');
+                });
+
+                App.Websocket.on('update queue', function () {
+                    console.log('do update!');
+                    self.update();
+                });
+                
+                self.update();
+            },
+            
+            update: function () {
+                var self = this;
+                App.ajax({
+                    url: App.url('/novosga.monitor/ajax_update'),
+                    data: {
+                        ids: ids.join(',')
+                    },
+                    success: function (response) {
+                        self.servicos = response.data;
+                    }
+                });
             },
             
             /**
@@ -96,33 +121,63 @@ App.Monitor = {
             },
 
             transferir: function (atendimento, novoServico, novaPrioridade) {
-                App.ajax({
-                    url: App.url('/novosga.monitor/transferir/') + atendimento.id,
-                    type: 'post',
-                    data: {
-                        servico: novoServico,
-                        prioridade: novaPrioridade
-                    },
-                    success: function () {
-                        $('.modal').modal('hide');
+                var self = this;
+                swal({
+                    title: App.Monitor.alertTitle,
+                    text: App.Monitor.alertTransferir,
+                    type: "warning",
+                    buttons: [
+                        App.Monitor.labelNao,
+                        App.Monitor.labelSim
+                    ],
+                    //dangerMode: true,
+                })
+                .then(function (ok) {
+                    if (!ok) {
+                        return;
                     }
+                    
+                    App.ajax({
+                        url: App.url('/novosga.monitor/transferir/') + atendimento.id,
+                        type: 'post',
+                        data: {
+                            servico: novoServico,
+                            prioridade: novaPrioridade
+                        },
+                        success: function () {
+                            App.Websocket.emit('change ticket', {
+                                unidade: self.unidade.id
+                            });
+                            $('.modal').modal('hide');
+                        }
+                    });
                 });
             },
 
             reativar: function(atendimento) {
+                var self = this;
                 swal({
                     title: App.Monitor.alertTitle,
                     text: App.Monitor.alertReativar,
                     type: "warning",
-                    showCancelButton: true,
-                    cancelButtonText: App.Monitor.labelNao,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: App.Monitor.labelSim,
-                }, function(){
+                    buttons: [
+                        App.Monitor.labelNao,
+                        App.Monitor.labelSim
+                    ],
+                    //dangerMode: true,
+                })
+                .then(function (ok) {
+                    if (!ok) {
+                        return;
+                    }
+                    
                     App.ajax({
                         url: App.url('/novosga.monitor/reativar/') + atendimento.id,
                         type: 'post',
                         success: function () {
+                            App.Websocket.emit('change ticket', {
+                                unidade: self.unidade.id
+                            });
                             $('.modal').modal('hide');
                         }
                     });
@@ -130,29 +185,35 @@ App.Monitor = {
             },
 
             cancelar: function(atendimento) {
+                var self = this;
                 swal({
                     title: App.Monitor.alertTitle,
                     text: App.Monitor.alertCancelar,
                     type: "warning",
-                    showCancelButton: true,
-                    cancelButtonText: App.Monitor.labelNao,
-                    confirmButtonColor: "#DD6B55",
-                    confirmButtonText: App.Monitor.labelSim,
-                }, function(){
+                    buttons: [
+                        App.Monitor.labelNao,
+                        App.Monitor.labelSim
+                    ],
+                    //dangerMode: true,
+                })
+                .then(function (ok) {
+                    if (!ok) {
+                        return;
+                    }
+            
                     App.ajax({
                         url: App.url('/novosga.monitor/cancelar/') + atendimento.id,
                         type: 'post',
                         success: function () {
+                            App.Websocket.emit('change ticket', {
+                                unidade: self.unidade.id
+                            });
                             $('.modal').modal('hide');
                         }
                     });
                 });
-            },
-            
-            init: function () {
-                this.ajaxUpdate();
             }
-        },
+        }
     });
     
     app.init();

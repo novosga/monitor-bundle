@@ -72,7 +72,6 @@ class DefaultController extends Controller
         $servicos = $this->servicos($unidade, 'e.ativo = TRUE');
         
         $transferirForm = $this->createForm(TransferirType::class, null, [
-            'csrf_protection' => false,
             'servicos' => array_map(function ($su) {
                             return $su->getServico();
             }, $servicos)
