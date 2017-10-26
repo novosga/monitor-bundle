@@ -1,24 +1,31 @@
 {% extends "@NovosgaMonitor/base.html.twig" %}
 
 {% block body %}
-    <h1>
-        <i class="fa fa-desktop" aria-hidden="true"></i>
-        {% trans %}Monitor{% endtrans %}
-        <small>
-            {% trans %}Gerencie os atendimentos da unidade{% endtrans %}
-        </small>
-    </h1>
-    
     <div id="monitor">
-        <form class="form-inline" role="search"  v-on:submit.prevent="consulta">
-            <div class="form-group">
-                <input type="text" class="form-search form-control" placeholder="{% trans %}buscar senha{% endtrans %}" v-model="search">
+        <div class="row">
+            <div class="col-8">
+                <h1>
+                    <i class="fa fa-desktop" aria-hidden="true"></i>
+                    {% trans %}Monitor{% endtrans %}
+                    <small>
+                        {% trans %}Gerencie os atendimentos da unidade{% endtrans %}
+                    </small>
+                </h1>
             </div>
-            <button type="submit" class="btn btn-primary">
-                <i class="fa fa-search"></i>&nbsp;
-                {% trans %}Consultar{% endtrans %}
-            </button>
-        </form>
+            <div class="col-4">
+                <form class="pull-right" role="search"  v-on:submit.prevent="consulta">
+                    <div class="input-group">
+                        <input type="text" class="form-search form-control" placeholder="{% trans %}Buscar senha{% endtrans %}" v-model="search">
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fa fa-search"></i>&nbsp;
+                                {% trans %}Consultar{% endtrans %}
+                            </button>
+                        </span>
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="servicos row">
             {% verbatim %}
                 <div class="col-md-6" v-for="item in servicos">
@@ -45,21 +52,26 @@
         
         {# busca #}
         <div id="dialog-busca" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{% trans %}Busca{% endtrans %}</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                     </div>
                     <div class="modal-body">
-                        <form class="form-inline" role="form" v-on:submit.prevent="consultar">
-                            <div class="form-group">
-                                <input type="text" maxlength="5" class="form-search form-control" placeholder="{% trans %}Número{% endtrans %}" v-model="search" />
+                        <form class="row" role="form" v-on:submit.prevent="consultar">
+                            <div class="col-3">
+                                <div class="input-group">
+                                    <input type="text" maxlength="10" class="form-search form-control" placeholder="{% trans %}Senha completa, sigla ou número{% endtrans %}" v-model="search">
+                                    <span class="input-group-btn">
+                                        <button type="submit" class="btn btn-primary" title="{% trans %}Consultar{% endtrans %}">
+                                            <i class="fa fa-search"></i>
+                                        </button>
+                                    </span>
+                                </div>
                             </div>
-                            <button class="btn btn-primary">
-                                {% trans %}Consultar{% endtrans %}
-                            </button>
                         </form>
+                        <hr>
                         <div class="result">
                             <table class="table table-bordered">
                                 <thead>
@@ -102,13 +114,19 @@
                                                 {{atendimento.servico.nome}}
                                             </td>
                                             <td>
-                                                {{atendimento.chegada}}
+                                                <span v-if="atendimento.chegada">
+                                                    {{moment(atendimento.chegada, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm:ss')}}
+                                                </span>
                                             </td>
                                             <td>
-                                                {{atendimento.inicio}}
+                                                <span v-if="atendimento.inicio">
+                                                    {{moment(atendimento.inicio, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm:ss')}}
+                                                </span>
                                             </td>
                                             <td>
-                                                {{atendimento.fim}}
+                                                <span v-if="atendimento.fim">
+                                                    {{moment(atendimento.fim, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm:ss')}}
+                                                </span>
                                             </td>
                                             <td>
                                                 {{atendimento.triagem}}
@@ -131,7 +149,7 @@
 
         {# view #}
         <div id="dialog-view" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{% trans %}Atendimento{% endtrans %}</h5>

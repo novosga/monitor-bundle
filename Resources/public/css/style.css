@@ -2,6 +2,10 @@
  * Novo SGA - Monitor
  * @author Rogerio Lino <rogeriolino@gmail.com>
  */
+body>section {
+    padding: 20px 10px;
+}
+
  
 #monitor .search {
     padding: 5px;
@@ -23,5 +27,5 @@
 }
 
 #dialog-busca .modal-dialog {
-    width: 90%;
+    max-width: 90%;
 }
