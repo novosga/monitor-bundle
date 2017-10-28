@@ -37,19 +37,19 @@
                             {{ item.servicoUnidade.sigla }} - {{ item.servicoUnidade.servico.nome }}
                         {% endverbatim %}
                         <div class="pull-right">
-                            <span class="badge badge-primary">
+                            <span class="badge badge-pill badge-primary">
                                 {% trans %}Normal{% endtrans %}
                                 {% verbatim %}
                                     {{ totalPorSituacao(item.fila, false) }}
                                 {% endverbatim %}
                             </span>
-                            <span class="badge badge-danger">
+                            <span class="badge badge-pill badge-danger">
                                 {% trans %}Prioridade{% endtrans %}
                                 {% verbatim %}
                                     {{ totalPorSituacao(item.fila, true) }}
                                 {% endverbatim %}
                             </span>
-                            <span class="badge badge-secondary">
+                            <span class="badge badge-pill badge-secondary">
                                 {% trans %}Total{% endtrans %}
                                 {% verbatim %}
                                     {{ item.fila.length }}
