@@ -75,9 +75,10 @@ class DefaultController extends Controller
             throw new Exception(_('Nenhuma unidade escolhida'));
         }
 
-        $data = [];
-        $ids = explode(',', $request->get('ids'));
-
+        $data  = [];
+        $param = $request->get('ids');
+        $ids   = explode(',', $param ?: '0');
+        
         if (count($ids)) {
             $servicos = $servicoService->servicosUnidade($unidade, ' e.servico IN ('.implode(',', $ids).') ');
 
