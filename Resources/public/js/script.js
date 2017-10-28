@@ -211,6 +211,16 @@ App.Monitor = {
                         }
                     });
                 });
+            },
+            
+            totalPorSituacao: function (fila, prioridade) {
+                var filtered = fila.filter(function (atendimento) {
+                    if (prioridade) {
+                        return atendimento.prioridade.peso > 0;
+                    }
+                    return atendimento.prioridade.peso === 0;
+                });
+                return filtered.length;
             }
         }
     });

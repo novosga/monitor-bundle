@@ -26,28 +26,50 @@
                 </form>
             </div>
         </div>
-        <div class="servicos row">
-            {% verbatim %}
-                <div class="col-md-6" v-for="item in servicos">
-                    <div class="card">
-                        <div class="card-header">
+
+        <hr>
+        
+        <div class="servicos row" v-cloak>
+            <div class="col-md-6" v-for="item in servicos">
+                <div class="card">
+                    <div class="card-header">
+                        {% verbatim %}
                             {{ item.servicoUnidade.sigla }} - {{ item.servicoUnidade.servico.nome }}
-                            <span class="badge pull-right">
-                                {{ item.fila.length }}
+                        {% endverbatim %}
+                        <div class="pull-right">
+                            <span class="badge badge-primary">
+                                {% trans %}Normal{% endtrans %}
+                                {% verbatim %}
+                                    {{ totalPorSituacao(item.fila, false) }}
+                                {% endverbatim %}
+                            </span>
+                            <span class="badge badge-danger">
+                                {% trans %}Prioridade{% endtrans %}
+                                {% verbatim %}
+                                    {{ totalPorSituacao(item.fila, true) }}
+                                {% endverbatim %}
+                            </span>
+                            <span class="badge badge-secondary">
+                                {% trans %}Total{% endtrans %}
+                                {% verbatim %}
+                                    {{ item.fila.length }}
+                                {% endverbatim %}
                             </span>
                         </div>
-                        <div class="card-body">
-                            <ul class="fila list-inline">
-                                <li v-for="atendimento in item.fila" v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }" class="list-inline-item">
-                                    <a href="#" v-on:click="view(atendimento)" v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.espera + ')'">
+                    </div>
+                    <div class="card-body">
+                        <ul class="fila list-inline">
+                            <li v-for="atendimento in item.fila" v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }" class="list-inline-item">
+                                <a href="#" v-on:click="view(atendimento)" v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.espera + ')'">
+                                    {% verbatim %}
                                         {{atendimento.senha.format}}
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
+                                    {% endverbatim %}
+                                </a>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-            {% endverbatim %}
+            </div>
         </div>
         
         {# busca #}
@@ -196,7 +218,7 @@
                                     </th>
                                     <td>
                                         {% verbatim %}
-                                            {{atendimento.chegada}}
+                                            {{moment(atendimento.chegada, 'YYYY-MM-DD hh:mm:ss').format('DD/MM/YYYY hh:mm:ss')}}
                                         {% endverbatim %}
                                     </td>
                                 </tr>
