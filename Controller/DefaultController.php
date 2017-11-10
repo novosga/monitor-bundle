@@ -63,9 +63,9 @@ class DefaultController extends Controller
      * @Route("/ajax_update", name="novosga_monitor_ajaxupdate")
      */
     public function ajaxUpdateAction(
-            Request $request,
-            ServicoService $servicoService,
-            FilaService $filaService
+        Request $request,
+        ServicoService $servicoService,
+        FilaService $filaService
     ) {
         $envelope = new Envelope();
         $usuario = $this->getUser();
@@ -159,10 +159,10 @@ class DefaultController extends Controller
      * @Method("POST")
      */
     public function transferirAction(
-            Request $request,
-            AtendimentoService $atendimentoService,
-            ServicoService $servicoService,
-            Atendimento $atendimento
+        Request $request,
+        AtendimentoService $atendimentoService,
+        ServicoService $servicoService,
+        Atendimento $atendimento
     ) {
         $envelope = new Envelope();
         
@@ -238,9 +238,9 @@ class DefaultController extends Controller
      * @Method("POST")
      */
     public function cancelarAction(
-            Request $request,
-            AtendimentoService $atendimentoService,
-            Atendimento $atendimento
+        Request $request,
+        AtendimentoService $atendimentoService,
+        Atendimento $atendimento
     ) {
         $envelope = new Envelope();
         
