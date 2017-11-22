@@ -2,26 +2,6 @@
  * Novo SGA - Monitor
  * @author Rogerio Lino <rogeriolino@gmail.com>
  */
-var App = App || {};
-
-App.Monitor = {
-    ids: [],
-    labelSim: '',
-    labelNao: '',
-    labelTransferir: '',
-    alertCancelar: '',
-    alertReativar: '',
-    alertTitle: '',
-    timeoutId: 0,
-    
-    Senha: {
-        dialogView: '#dialog-view',
-        dialogSearch: '#dialog-busca',
-        dialogTransfere: '#dialog-transfere',
-    }
-};
-
-
 (function () {
     'use strict'
     
@@ -122,12 +102,12 @@ App.Monitor = {
             transferir: function (atendimento, novoServico, novaPrioridade) {
                 var self = this;
                 swal({
-                    title: App.Monitor.alertTitle,
-                    text: App.Monitor.alertTransferir,
+                    title: alertTitle,
+                    text: alertTransferir,
                     type: "warning",
                     buttons: [
-                        App.Monitor.labelNao,
-                        App.Monitor.labelSim
+                        labelNao,
+                        labelSim
                     ],
                     //dangerMode: true,
                 })
@@ -156,12 +136,12 @@ App.Monitor = {
             reativar: function(atendimento) {
                 var self = this;
                 swal({
-                    title: App.Monitor.alertTitle,
-                    text: App.Monitor.alertReativar,
+                    title: alertTitle,
+                    text: alertReativar,
                     type: "warning",
                     buttons: [
-                        App.Monitor.labelNao,
-                        App.Monitor.labelSim
+                        labelNao,
+                        labelSim
                     ],
                     //dangerMode: true,
                 })
@@ -186,12 +166,12 @@ App.Monitor = {
             cancelar: function(atendimento) {
                 var self = this;
                 swal({
-                    title: App.Monitor.alertTitle,
-                    text: App.Monitor.alertCancelar,
+                    title: alertTitle,
+                    text: alertCancelar,
                     type: "warning",
                     buttons: [
-                        App.Monitor.labelNao,
-                        App.Monitor.labelSim
+                        labelNao,
+                        labelSim
                     ],
                     //dangerMode: true,
                 })

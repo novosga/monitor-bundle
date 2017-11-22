@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="pt-BR" target-language="pt-BR" datatype="plaintext" original="messages.pt_BR.xlf">
+    <body>
+      <trans-unit id="0">
+        <source>module.name.monitor</source>
+        <target>Monitor</target>
+      </trans-unit>
+      <trans-unit id="1">
+        <source>title</source>
+        <target>Monitor</target>
+      </trans-unit>
+      <trans-unit id="2">
+        <source>subtitle</source>
+        <target>Gerencie os atendimentos da unidade</target>
+      </trans-unit>
+      <trans-unit id="3">
+        <source>button.find</source>
+        <target>Consultar</target>
+      </trans-unit>
+      <trans-unit id="4">
+        <source>placeholder.search</source>
+        <target>Buscar senha</target>
+      </trans-unit>
+      <trans-unit id="5">
+        <source>label.no_priority</source>
+        <target>Normal</target>
+      </trans-unit>
+      <trans-unit id="6">
+        <source>label.priority</source>
+        <target>Prioridade</target>
+      </trans-unit>
+      <trans-unit id="7">
+        <source>label.total</source>
+        <target>Total</target>
+      </trans-unit>
+      <trans-unit id="8">
+        <source>modal.attendance</source>
+        <target>Atendimento</target>
+      </trans-unit>
+      <trans-unit id="9">
+        <source>modal.attendance.ticket</source>
+        <target>Senha</target>
+      </trans-unit>
+      <trans-unit id="10">
+        <source>label.service</source>
+        <target>Serviço</target>
+      </trans-unit>
+      <trans-unit id="11">
+        <source>label.ticket.wait_time</source>
+        <target>Tempo de espera</target>
+      </trans-unit>
+      <trans-unit id="12">
+        <source>label.customer</source>
+        <target>Cliente</target>
+      </trans-unit>
+      <trans-unit id="13">
+        <source>label.customer.name</source>
+        <target>Nome</target>
+      </trans-unit>
+      <trans-unit id="14">
+        <source>label.customer.id</source>
+        <target>Nome</target>
+      </trans-unit>
+      <trans-unit id="15">
+        <source>label.yes</source>
+        <target>Sim</target>
+      </trans-unit>
+      <trans-unit id="16">
+        <source>label.no</source>
+        <target>Sim</target>
+      </trans-unit>
+      <trans-unit id="17">
+        <source>alert.title</source>
+        <target>Atenção</target>
+      </trans-unit>
+      <trans-unit id="18">
+        <source>alert.cancel.text</source>
+        <target>Deseja realmente cancelar essa senha?</target>
+      </trans-unit>
+      <trans-unit id="19">
+        <source>alert.reactivate.text</source>
+        <target>Deseja realmente reativar essa senha?</target>
+      </trans-unit>
+      <trans-unit id="20">
+        <source>alert.transfer.text</source>
+        <target>Deseja realmente transferir essa senha?</target>
+      </trans-unit>
+      <trans-unit id="21">
+        <source>modal.attendance.button.reactivate</source>
+        <target>Reativar senha</target>
+      </trans-unit>
+      <trans-unit id="22">
+        <source>modal.attendance.button.transfer</source>
+        <target>Transferir / Alterar senha</target>
+      </trans-unit>
+      <trans-unit id="23">
+        <source>modal.attendance.button.cancel</source>
+        <target>Cancelar senha</target>
+      </trans-unit>
+      <trans-unit id="24">
+        <source>modal.transfer</source>
+        <target>Tranferir Senha</target>
+      </trans-unit>
+      <trans-unit id="25">
+        <source>modal.transfer.button</source>
+        <target>Tranferir</target>
+      </trans-unit>
+      <trans-unit id="35">
+        <source>modal.search</source>
+        <target>Busca</target>
+      </trans-unit>
+      <trans-unit id="36">
+        <source>modal.search.placeholder</source>
+        <target>Senha completa, sigla ou número</target>
+      </trans-unit>
+      <trans-unit id="37">
+        <source>label.ticket.number</source>
+        <target>Número</target>
+      </trans-unit>
+      <trans-unit id="38">
+        <source>label.ticket.arrival_date</source>
+        <target>Data chegada</target>
+      </trans-unit>
+      <trans-unit id="39">
+        <source>label.ticket.start_date</source>
+        <target>Data início</target>
+      </trans-unit>
+      <trans-unit id="40">
+        <source>label.ticket.end_date</source>
+        <target>Data fim</target>
+      </trans-unit>
+      <trans-unit id="41">
+        <source>label.triage</source>
+        <target>Triagem</target>
+      </trans-unit>
+      <trans-unit id="42">
+        <source>label.ticket.user</source>
+        <target>Atendente</target>
+      </trans-unit>
+      <trans-unit id="43">
+        <source>label.status</source>
+        <target>Situação</target>
+      </trans-unit>
+      <trans-unit id="44">
+        <source>MM/DD/YYYY hh:mm:ss</source>
+        <target>DD/MM/YYYY hh:mm:ss</target>
+      </trans-unit>
+      <trans-unit id="49">
+        <source>modal.search.button.submit</source>
+        <target>Consultar</target>
+      </trans-unit>
+      <trans-unit id="50">
+        <source>server.datetime</source>
+        <target>Data e hora no servidor</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

@@ -1,5 +1,7 @@
 {% extends "base.html.twig" %}
 
+{% trans_default_domain 'NovosgaMonitorBundle' %}
+
 {% block title -%}
-    {% trans %}Monitor{% endtrans %}
+    {{ 'title'|trans }}
 {%- endblock %} 
