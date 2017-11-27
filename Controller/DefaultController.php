@@ -43,7 +43,7 @@ class DefaultController extends Controller
     {
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
-        $servicos = $servicoService->servicosUnidade($unidade, 'e.ativo = TRUE');
+        $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
         
         $transferirForm = $this->createTransferirForm($request, $servicoService);
 
@@ -80,7 +80,7 @@ class DefaultController extends Controller
         $ids   = explode(',', $param ?: '0');
         
         if (count($ids)) {
-            $servicos = $servicoService->servicosUnidade($unidade, ' e.servico IN ('.implode(',', $ids).') ');
+            $servicos = $servicoService->servicosUnidade($unidade, ['servico' => $ids]);
 
             if ($servicos) {
                 foreach ($servicos as $su) {
@@ -201,31 +201,26 @@ class DefaultController extends Controller
      */
     public function reativarAction(Request $request, Atendimento $atendimento)
     {
-        $em = $this->getDoctrine()->getManager();
+        $em       = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
+        $usuario  = $this->getUser();
+        $unidade  = $usuario->getLotacao()->getUnidade();
+        $statuses = [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU];
+
+        if ($atendimento->getUnidade()->getId() !== $unidade->getId()) {
+            throw new \Exception(_('Tentando reavitvar um atendimento de outra unidade.'));
+        }
+
+        if (!in_array($atendimento->getStatus(), $statuses)) {
+            throw new \Exception(_('Só é possível reativar um atendimento cancelado ou que não compareceu.'));
+        }
         
-        $usuario = $this->getUser();
-        $unidade = $usuario->getLotacao()->getUnidade();
-
-        $conn = $em->getConnection();
-        $status = "'" . implode("','", [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU]) . "'";
-        // reativa apenas se estiver finalizada (data fim diferente de nulo)
-        $stmt = $conn->prepare("
-            UPDATE
-                atendimentos
-            SET
-                status = :status,
-                dt_fim = NULL
-            WHERE
-                id = :id AND
-                unidade_id = :unidade AND
-                status IN ({$status})
-        ");
-        $stmt->bindValue('id', $atendimento->getId());
-        $stmt->bindValue('status', AtendimentoService::SENHA_EMITIDA);
-        $stmt->bindValue('unidade', $unidade->getId());
-        $stmt->execute() > 0;
-
+        $atendimento->setStatus(AtendimentoService::SENHA_EMITIDA);
+        $atendimento->setDataFim(null);
+        
+        $em->merge($atendimento);
+        $em->flush();
+        
         return $this->json($envelope);
     }
 
@@ -260,7 +255,7 @@ class DefaultController extends Controller
     {
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
-        $servicos = $servicoService->servicosUnidade($unidade, 'e.ativo = TRUE');
+        $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
         
         $transferirForm = $this->createForm(TransferirType::class, null, [
             'servicos' => array_map(function ($su) {
@@ -273,7 +268,7 @@ class DefaultController extends Controller
 
     private function checkAtendimento(Unidade $unidade, Atendimento $atendimento)
     {
-        if ($atendimento->getServicoUnidade()->getUnidade()->getId() != $unidade->getId()) {
+        if ($atendimento->getUnidade()->getId() != $unidade->getId()) {
             throw new Exception(_('Atendimento inválido'));
         }
     }

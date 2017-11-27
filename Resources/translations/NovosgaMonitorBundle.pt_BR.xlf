@@ -68,7 +68,7 @@
       </trans-unit>
       <trans-unit id="16">
         <source>label.no</source>
-        <target>Sim</target>
+        <target>Não</target>
       </trans-unit>
       <trans-unit id="17">
         <source>alert.title</source>
