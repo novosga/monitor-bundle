@@ -2,7 +2,7 @@
   <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="es-AR">
     <body>
       <trans-unit id="0">
-        <source>module.name.monitor</source>
+        <source>module.name</source>
         
       </trans-unit>
       <trans-unit id="1">

@@ -3,7 +3,7 @@
   <file source-language="pt-BR" target-language="pt-BR" datatype="plaintext" original="messages.pt_BR.xlf">
     <body>
       <trans-unit id="0">
-        <source>module.name.monitor</source>
+        <source>module.name</source>
         <target>Monitor</target>
       </trans-unit>
       <trans-unit id="1">

@@ -22,7 +22,7 @@ class NovosgaMonitorBundle extends BaseModule
 
     public function getDisplayName()
     {
-        return 'module.name.monitor';
+        return 'module.name';
     }
 
     public function getHomeRoute()
