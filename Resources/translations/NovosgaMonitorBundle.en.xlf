@@ -76,6 +76,7 @@
       </trans-unit>
       <trans-unit id="15">
         <source>label.yes</source>
+        <target>Yes</target>
         
       </trans-unit>
       <trans-unit id="16">
@@ -123,6 +124,7 @@
       </trans-unit>
       <trans-unit id="25">
         <source>modal.transfer.button</source>
+        <target>Transfer</target>
         
       </trans-unit>
       <trans-unit id="35">
@@ -171,6 +173,7 @@
       </trans-unit>
       <trans-unit id="44">
         <source>MM/DD/YYYY hh:mm:ss</source>
+        <target>DD/MM/YYYY hh:mm:ss</target>
         
       </trans-unit>
       <trans-unit id="49">
@@ -181,6 +184,16 @@
       <trans-unit id="50">
         <source>server.datetime</source>
         <target>Server datetime</target>
+        
+      </trans-unit>
+      <trans-unit id="51">
+        <source>transferir.type.servico</source>
+        <target>New service</target>
+        
+      </trans-unit>
+      <trans-unit id="52">
+        <source>transferir.type.prioridade</source>
+        <target>New priority</target>
         
       </trans-unit>
     </body>

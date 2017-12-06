@@ -32,7 +32,9 @@ class TransferirType extends AbstractType
             ->add('servico', EntityType::class, [
                 'class' => Servico::class,
                 'choices' => $servicos,
-                'placeholder' => ''
+                'placeholder' => '',
+                'label' => 'transferir.type.servico',
+                'translation_domain' => 'NovosgaMonitorBundle',
             ])
             ->add('prioridade', EntityType::class, [
                 'class' => Prioridade::class,
@@ -42,7 +44,9 @@ class TransferirType extends AbstractType
                                 ->orderBy('e.peso', 'ASC')
                                 ->addOrderBy('e.nome', 'ASC');
                 },
-                'placeholder' => ''
+                'placeholder' => '',
+                'label' => 'transferir.type.prioridade',
+                'translation_domain' => 'NovosgaMonitorBundle',
             ])
         ;
     }

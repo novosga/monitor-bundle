@@ -183,6 +183,16 @@
         <target>Fecha y hora en el servidor</target>
         
       </trans-unit>
+      <trans-unit id="51">
+        <source>transferir.type.servico</source>
+        <target>Nuevo servicio</target>
+        
+      </trans-unit>
+      <trans-unit id="52">
+        <source>transferir.type.prioridade</source>
+        <target>Nueva prioridad</target>
+        
+      </trans-unit>
     </body>
   </file>
 </xliff>

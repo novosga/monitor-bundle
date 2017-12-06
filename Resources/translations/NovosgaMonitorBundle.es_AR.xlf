@@ -3,14 +3,17 @@
     <body>
       <trans-unit id="0">
         <source>module.name</source>
+        <target>Monitor</target>
         
       </trans-unit>
       <trans-unit id="1">
         <source>title</source>
+        <target>Monitor</target>
         
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
+        <target>Administre las atenciones de la Unidad</target>
         
       </trans-unit>
       <trans-unit id="3">
@@ -20,6 +23,7 @@
       </trans-unit>
       <trans-unit id="4">
         <source>placeholder.search</source>
+        <target>Buscar turno</target>
         
       </trans-unit>
       <trans-unit id="5">
@@ -74,6 +78,7 @@
       </trans-unit>
       <trans-unit id="15">
         <source>label.yes</source>
+        <target>Sí</target>
         
       </trans-unit>
       <trans-unit id="16">
@@ -97,30 +102,32 @@
       </trans-unit>
       <trans-unit id="20">
         <source>alert.transfer.text</source>
+        <target>Realmente desea transferir este turno?</target>
         
       </trans-unit>
       <trans-unit id="21">
         <source>modal.attendance.button.reactivate</source>
-        <target>Reactivar número</target>
+        <target>Reactivar turno</target>
         
       </trans-unit>
       <trans-unit id="22">
         <source>modal.attendance.button.transfer</source>
-        <target>Transferir / Modificar número</target>
+        <target>Transferir / Modificar turno</target>
         
       </trans-unit>
       <trans-unit id="23">
         <source>modal.attendance.button.cancel</source>
-        <target>Cancelar número</target>
+        <target>Cancelar turno</target>
         
       </trans-unit>
       <trans-unit id="24">
         <source>modal.transfer</source>
-        <target>Transferir número</target>
+        <target>Transferir turno</target>
         
       </trans-unit>
       <trans-unit id="25">
         <source>modal.transfer.button</source>
+        <target>Transferir</target>
         
       </trans-unit>
       <trans-unit id="35">
@@ -181,6 +188,16 @@
       <trans-unit id="50">
         <source>server.datetime</source>
         <target>Fecha y hora en el servidor</target>
+        
+      </trans-unit>
+      <trans-unit id="51">
+        <source>transferir.type.servico</source>
+        <target>Nuevo servicio</target>
+        
+      </trans-unit>
+      <trans-unit id="52">
+        <source>transferir.type.prioridade</source>
+        <target>Nueva prioridad</target>
         
       </trans-unit>
     </body>
