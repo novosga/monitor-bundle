@@ -62,7 +62,7 @@
                     <div class="card-body">
                         <ul class="fila list-inline">
                             <li v-for="atendimento in item.fila" v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }" class="list-inline-item">
-                                <a href="#" v-on:click="view(atendimento)" v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.espera + ')'">
+                                <a href="#" v-on:click="view(atendimento)" v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.tempoEspera + ')'">
                                     {% verbatim %}
                                         {{atendimento.senha.format}}
                                     {% endverbatim %}
@@ -122,18 +122,18 @@
                                                 {{atendimento.servico.nome}}
                                             </td>
                                             <td>
-                                                <span v-if="atendimento.chegada">
-                                                    {{moment(atendimento.chegada, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
+                                                <span v-if="atendimento.dataChegada">
+                                                    {{moment(atendimento.dataChegada, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span v-if="atendimento.inicio">
-                                                    {{moment(atendimento.inicio, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
+                                                <span v-if="atendimento.dataInicio">
+                                                    {{moment(atendimento.dataInicio, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
                                                 </span>
                                             </td>
                                             <td>
-                                                <span v-if="atendimento.fim">
-                                                    {{moment(atendimento.fim, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
+                                                <span v-if="atendimento.dataFim">
+                                                    {{moment(atendimento.dataFim, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
                                                 </span>
                                             </td>
                                             <td>
@@ -204,7 +204,7 @@
                                     </th>
                                     <td>
                                         {% verbatim %}
-                                            {{moment(atendimento.chegada, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
+                                            {{moment(atendimento.dataChegada, 'YYYY-MM-DD hh:mm:ss').format(dateTimeFormat)}}
                                         {% endverbatim %}
                                     </td>
                                 </tr>
@@ -214,7 +214,7 @@
                                     </th>
                                     <td>
                                         {% verbatim %}
-                                            {{atendimento.espera}}
+                                            {{atendimento.tempoEspera}}
                                         {% endverbatim %}
                                     </td>
                                 </tr>
@@ -224,7 +224,7 @@
                                     </th>
                                     <td>
                                         {% verbatim %}
-                                            {{atendimento.inicio}}
+                                            {{atendimento.dataInicio}}
                                         {% endverbatim %}
                                     </td>
                                 </tr>
@@ -234,7 +234,7 @@
                                     </th>
                                     <td>
                                         {% verbatim %}
-                                            {{atendimento.fim}}
+                                            {{atendimento.dataFim}}
                                         {% endverbatim %}
                                     </td>
                                 </tr>
