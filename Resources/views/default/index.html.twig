@@ -340,15 +340,16 @@
 {% block javascripts %}
     {{ parent() }}
     <script type="text/javascript">
-        var ids = [{% for su in servicos %}{{su.servico.id}},{% endfor %}],
-            unidade = {{ unidade|json_encode()|raw }},
-            labelSim = '{{ 'label.yes'|trans }}',
-            labelNao = '{{ 'label.no'|trans }}',
-            alertTitle = '{{ 'alert.title'|trans }}',
-            alertCancelar = '{{ 'alert.cancel.text'|trans }}',
-            alertReativar = '{{ 'alert.reactivate.text'|trans }}',
+        var ids             = [{% for su in servicos %}{{su.servico.id}},{% endfor %}],
+            unidade         = {{ unidade|json_encode()|raw }},
+            labelSim        = '{{ 'label.yes'|trans }}',
+            labelNao        = '{{ 'label.no'|trans }}',
+            alertTitle      = '{{ 'alert.title'|trans }}',
+            alertCancelar   = '{{ 'alert.cancel.text'|trans }}',
+            alertReativar   = '{{ 'alert.reactivate.text'|trans }}',
             alertTransferir = '{{ 'alert.transfer.text'|trans }}',
-            dateTimeFormat = '{{ 'MM/DD/YYYY hh:mm:ss'|trans }}';
+            dateTimeFormat  = '{{ 'MM/DD/YYYY hh:mm:ss'|trans }}',
+            wsSecret        = '{{ wsSecret }}';
         
         App.Clock.init("novosga-clock", {{ milis }});
     </script>

@@ -11,6 +11,7 @@
 
 namespace Novosga\MonitorBundle\Controller;
 
+use App\Service\SecurityService;
 use Exception;
 use Novosga\Entity\Atendimento;
 use Novosga\Entity\Unidade;
@@ -39,7 +40,7 @@ class DefaultController extends Controller
      *
      * @Route("/", name="novosga_monitor_index")
      */
-    public function indexAction(Request $request, ServicoService $servicoService)
+    public function indexAction(Request $request, ServicoService $servicoService, SecurityService $securityService)
     {
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
@@ -48,10 +49,11 @@ class DefaultController extends Controller
         $transferirForm = $this->createTransferirForm($request, $servicoService);
 
         return $this->render('@NovosgaMonitor/default/index.html.twig', [
-            'unidade' => $unidade,
-            'servicos' => $servicos,
+            'unidade'        => $unidade,
+            'servicos'       => $servicos,
             'transferirForm' => $transferirForm->createView(),
-            'milis' => time() * 1000
+            'milis'          => time() * 1000,
+            'wsSecret'       => $securityService->getWebsocketSecret(),
         ]);
     }
 

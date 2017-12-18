@@ -25,7 +25,8 @@
                 App.Websocket.on('connect', function () {
                     console.log('connected!');
                     App.Websocket.emit('register user', {
-                        unidade: self.unidade.id
+                        secret: wsSecret,
+                        unity: self.unidade.id
                     });
                 });
 
@@ -125,7 +126,7 @@
                         },
                         success: function () {
                             App.Websocket.emit('change ticket', {
-                                unidade: self.unidade.id
+                                unity: self.unidade.id
                             });
                             $('.modal').modal('hide');
                         }
@@ -155,7 +156,7 @@
                         type: 'post',
                         success: function () {
                             App.Websocket.emit('change ticket', {
-                                unidade: self.unidade.id
+                                unity: self.unidade.id
                             });
                             $('.modal').modal('hide');
                         }
@@ -185,7 +186,7 @@
                         type: 'post',
                         success: function () {
                             App.Websocket.emit('change ticket', {
-                                unidade: self.unidade.id
+                                unity: self.unidade.id
                             });
                             $('.modal').modal('hide');
                         }
