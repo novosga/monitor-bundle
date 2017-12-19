@@ -24,6 +24,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Translation\TranslatorInterface;
 
 /**
  * DefaultController
@@ -32,6 +33,8 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DefaultController extends Controller
 {
+    const DOMAIN = 'NovosgaMonitorBundle';
+    
     /**
      *
      * @param Request $request
@@ -73,10 +76,6 @@ class DefaultController extends Controller
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
         
-        if (!$unidade) {
-            throw new Exception(_('Nenhuma unidade escolhida'));
-        }
-
         $data  = [];
         $param = $request->get('ids');
         $ids   = explode(',', $param ?: '0');
@@ -164,7 +163,8 @@ class DefaultController extends Controller
         Request $request,
         AtendimentoService $atendimentoService,
         ServicoService $servicoService,
-        Atendimento $atendimento
+        Atendimento $atendimento,
+        TranslatorInterface $translator
     ) {
         $envelope = new Envelope();
         
@@ -179,7 +179,7 @@ class DefaultController extends Controller
         $transferirForm->submit($data);
 
         if (!$transferirForm->isValid()) {
-            throw new Exception(_('Formulário inválido'));
+            throw new Exception($translator->trans('error.invalid_form', [], self::DOMAIN));
         }
         
         $servicoUnidade = $transferirForm->get('servico')->getData();
@@ -204,7 +204,7 @@ class DefaultController extends Controller
      * @Route("/reativar/{id}", name="novosga_monitor_reativar")
      * @Method("POST")
      */
-    public function reativarAction(Request $request, Atendimento $atendimento)
+    public function reativarAction(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
     {
         $em       = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
@@ -213,11 +213,11 @@ class DefaultController extends Controller
         $statuses = [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU];
 
         if ($atendimento->getUnidade()->getId() !== $unidade->getId()) {
-            throw new \Exception(_('Tentando reavitvar um atendimento de outra unidade.'));
+            throw new Exception($translator->trans('error.reactive.invalid_unity', [], self::DOMAIN));
         }
 
         if (!in_array($atendimento->getStatus(), $statuses)) {
-            throw new \Exception(_('Só é possível reativar um atendimento cancelado ou que não compareceu.'));
+            throw new Exception($translator->trans('error.reactive.invalid_status', [], self::DOMAIN));
         }
         
         $atendimento->setStatus(AtendimentoService::SENHA_EMITIDA);
@@ -269,10 +269,10 @@ class DefaultController extends Controller
         return $transferirForm;
     }
 
-    private function checkAtendimento(Unidade $unidade, Atendimento $atendimento)
+    private function checkAtendimento(Unidade $unidade, Atendimento $atendimento, TranslatorInterface $translator)
     {
         if ($atendimento->getUnidade()->getId() != $unidade->getId()) {
-            throw new Exception(_('Atendimento inválido'));
+            throw new Exception($translator->trans('error.ticket.invalid_unity', [], self::DOMAIN));
         }
     }
 }
