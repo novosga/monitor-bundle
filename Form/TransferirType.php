@@ -13,7 +13,7 @@ namespace Novosga\MonitorBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
 use Novosga\Entity\Prioridade;
-use Novosga\Entity\Servico;
+use Novosga\Entity\ServicoUnidade;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,7 +30,7 @@ class TransferirType extends AbstractType
         
         $builder
             ->add('servico', EntityType::class, [
-                'class' => Servico::class,
+                'class' => ServicoUnidade::class,
                 'choices' => $servicos,
                 'placeholder' => '',
                 'label' => 'transferir.type.servico',

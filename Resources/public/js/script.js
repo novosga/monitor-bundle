@@ -42,7 +42,7 @@
                 });
 
                 App.Websocket.on('update queue', function () {
-                    console.log('do update!');
+                    console.log('update queue: do update!');
                     self.update();
                 });
                 

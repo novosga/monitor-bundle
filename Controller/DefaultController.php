@@ -48,7 +48,7 @@ class DefaultController extends Controller
         $transferirForm = $this->createTransferirForm($request, $servicoService);
 
         return $this->render('@NovosgaMonitor/default/index.html.twig', [
-            'usuairo'        => $usuairo,
+            'usuario'        => $usuario,
             'unidade'        => $unidade,
             'servicos'       => $servicos,
             'transferirForm' => $transferirForm->createView(),
@@ -181,12 +181,15 @@ class DefaultController extends Controller
         if (!$transferirForm->isValid()) {
             throw new Exception(_('Formulário inválido'));
         }
+        
+        $servicoUnidade = $transferirForm->get('servico')->getData();
+        $prioridade     = $transferirForm->get('prioridade')->getData();
 
         $atendimentoService->transferir(
             $atendimento,
             $unidade,
-            $transferirForm->get('servico')->getData(),
-            $transferirForm->get('prioridade')->getData()
+            $servicoUnidade->getServico(),
+            $prioridade
         );
 
         return $this->json($envelope);
@@ -260,9 +263,7 @@ class DefaultController extends Controller
         $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
         
         $transferirForm = $this->createForm(TransferirType::class, null, [
-            'servicos' => array_map(function ($su) {
-                            return $su->getServico();
-            }, $servicos)
+            'servicos' => $servicos,
         ]);
         
         return $transferirForm;
