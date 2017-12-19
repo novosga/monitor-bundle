@@ -341,6 +341,7 @@
     {{ parent() }}
     <script type="text/javascript">
         var ids             = [{% for su in servicos %}{{su.servico.id}},{% endfor %}],
+            usuario         = {{ usuario|json_encode()|raw }},
             unidade         = {{ unidade|json_encode()|raw }},
             labelSim        = '{{ 'label.yes'|trans }}',
             labelNao        = '{{ 'label.no'|trans }}',

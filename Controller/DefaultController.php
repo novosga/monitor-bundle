@@ -32,7 +32,6 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class DefaultController extends Controller
 {
-
     /**
      *
      * @param Request $request
@@ -49,6 +48,7 @@ class DefaultController extends Controller
         $transferirForm = $this->createTransferirForm($request, $servicoService);
 
         return $this->render('@NovosgaMonitor/default/index.html.twig', [
+            'usuairo'        => $usuairo,
             'unidade'        => $unidade,
             'servicos'       => $servicos,
             'transferirForm' => $transferirForm->createView(),

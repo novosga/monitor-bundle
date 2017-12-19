@@ -8,7 +8,6 @@
     var app = new Vue({
         el: '#monitor',
         data: {
-            unidade: (unidade || {}),
             search: '',
             searchResult: [],
             servicos: [],
@@ -26,7 +25,8 @@
                     console.log('connected!');
                     App.Websocket.emit('register user', {
                         secret: wsSecret,
-                        unity: self.unidade.id
+                        user: usuario.id,
+                        unity: unidade.id
                     });
                 });
 
@@ -126,7 +126,7 @@
                         },
                         success: function () {
                             App.Websocket.emit('change ticket', {
-                                unity: self.unidade.id
+                                unity: unidade.id
                             });
                             $('.modal').modal('hide');
                         }
@@ -156,7 +156,7 @@
                         type: 'post',
                         success: function () {
                             App.Websocket.emit('change ticket', {
-                                unity: self.unidade.id
+                                unity: unidade.id
                             });
                             $('.modal').modal('hide');
                         }
@@ -186,7 +186,7 @@
                         type: 'post',
                         success: function () {
                             App.Websocket.emit('change ticket', {
-                                unity: self.unidade.id
+                                unity: unidade.id
                             });
                             $('.modal').modal('hide');
                         }
