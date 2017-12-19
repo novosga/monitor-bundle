@@ -115,14 +115,14 @@ class DefaultController extends Controller
      *
      * @Route("/info_senha/{id}", name="novosga_monitor_infosenha")
      */
-    public function infoSenhaAction(Request $request, Atendimento $atendimento)
+    public function infoSenhaAction(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
     {
         $envelope = new Envelope();
         
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
-        $this->checkAtendimento($unidade, $atendimento);
+        $this->checkAtendimento($unidade, $atendimento, $translator);
 
         $data = $atendimento->jsonSerialize();
         $envelope->setData($data);
@@ -171,7 +171,7 @@ class DefaultController extends Controller
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
-        $this->checkAtendimento($unidade, $atendimento);
+        $this->checkAtendimento($unidade, $atendimento, $translator);
 
         $data = json_decode($request->getContent(), true);
 
@@ -240,14 +240,15 @@ class DefaultController extends Controller
     public function cancelarAction(
         Request $request,
         AtendimentoService $atendimentoService,
-        Atendimento $atendimento
+        Atendimento $atendimento,
+        TranslatorInterface $translator
     ) {
         $envelope = new Envelope();
         
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
-        $this->checkAtendimento($unidade, $atendimento);
+        $this->checkAtendimento($unidade, $atendimento, $translator);
         $atendimentoService->cancelar($atendimento, $unidade);
 
         return $this->json($envelope);
