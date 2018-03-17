@@ -32,6 +32,12 @@
         <hr>
         
         <div class="servicos row" v-cloak>
+            <div class="col-md-12" v-if="servicos.length===0">
+                <div class="jumbotron text-center">
+                    <h1><i class="fa fa-smile-o"></i></h1>
+                    <p>Nenhum atendimento no momento</p>
+                </div>
+            </div>
             <div class="col-md-6" v-for="item in servicos">
                 <div class="card">
                     <div class="card-header">
