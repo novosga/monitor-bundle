@@ -249,7 +249,7 @@ class DefaultController extends Controller
         $unidade = $usuario->getLotacao()->getUnidade();
 
         $this->checkAtendimento($unidade, $atendimento, $translator);
-        $atendimentoService->cancelar($atendimento, $unidade);
+        $atendimentoService->cancelar($atendimento);
 
         return $this->json($envelope);
     }
