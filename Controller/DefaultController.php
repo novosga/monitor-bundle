@@ -42,7 +42,7 @@ class DefaultController extends Controller
      *
      * @Route("/", name="novosga_monitor_index")
      */
-    public function indexAction(Request $request, ServicoService $servicoService, SecurityService $securityService)
+    public function index(Request $request, ServicoService $servicoService, SecurityService $securityService)
     {
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
@@ -67,7 +67,7 @@ class DefaultController extends Controller
      *
      * @Route("/ajax_update", name="novosga_monitor_ajaxupdate")
      */
-    public function ajaxUpdateAction(
+    public function ajaxUpdate(
         Request $request,
         ServicoService $servicoService,
         FilaService $filaService
@@ -115,7 +115,7 @@ class DefaultController extends Controller
      *
      * @Route("/info_senha/{id}", name="novosga_monitor_infosenha")
      */
-    public function infoSenhaAction(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
+    public function infoSenha(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
     {
         $envelope = new Envelope();
         
@@ -137,7 +137,7 @@ class DefaultController extends Controller
      *
      * @Route("/buscar", name="novosga_monitor_buscar")
      */
-    public function buscarAction(Request $request, AtendimentoService $atendimentoService)
+    public function buscar(Request $request, AtendimentoService $atendimentoService)
     {
         $envelope = new Envelope();
         
@@ -159,7 +159,7 @@ class DefaultController extends Controller
      * @Route("/transferir/{id}", name="novosga_monitor_transferir")
      * @Method("POST")
      */
-    public function transferirAction(
+    public function transferir(
         Request $request,
         AtendimentoService $atendimentoService,
         ServicoService $servicoService,
@@ -204,7 +204,7 @@ class DefaultController extends Controller
      * @Route("/reativar/{id}", name="novosga_monitor_reativar")
      * @Method("POST")
      */
-    public function reativarAction(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
+    public function reativar(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
     {
         $em       = $this->getDoctrine()->getManager();
         $envelope = new Envelope();
@@ -237,7 +237,7 @@ class DefaultController extends Controller
      * @Route("/cancelar/{id}", name="novosga_monitor_cancelar")
      * @Method("POST")
      */
-    public function cancelarAction(
+    public function cancelar(
         Request $request,
         AtendimentoService $atendimentoService,
         Atendimento $atendimento,
