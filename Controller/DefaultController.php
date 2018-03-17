@@ -264,7 +264,8 @@ class DefaultController extends Controller
         $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
         
         $transferirForm = $this->createForm(TransferirType::class, null, [
-            'servicos' => $servicos,
+            'csrf_protection' => false,
+            'servicos'        => $servicos,
         ]);
         
         return $transferirForm;
