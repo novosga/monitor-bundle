@@ -20,8 +20,7 @@ use Novosga\MonitorBundle\Form\TransferirType;
 use Novosga\Service\AtendimentoService;
 use Novosga\Service\FilaService;
 use Novosga\Service\ServicoService;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -40,7 +39,7 @@ class DefaultController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/", name="novosga_monitor_index")
+     * @Route("/", name="novosga_monitor_index", methods={"GET"})
      */
     public function index(Request $request, ServicoService $servicoService, SecurityService $securityService)
     {
@@ -65,7 +64,7 @@ class DefaultController extends Controller
      * @param Request $request
      * @return \Symfony\Component\HttpFoundation\Response
      *
-     * @Route("/ajax_update", name="novosga_monitor_ajaxupdate")
+     * @Route("/ajax_update", name="novosga_monitor_ajaxupdate", methods={"GET"})
      */
     public function ajaxUpdate(
         Request $request,
@@ -113,7 +112,7 @@ class DefaultController extends Controller
      * @param Request $request
      * @return Response
      *
-     * @Route("/info_senha/{id}", name="novosga_monitor_infosenha")
+     * @Route("/info_senha/{id}", name="novosga_monitor_infosenha", methods={"GET"})
      */
     public function infoSenha(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
     {
@@ -135,7 +134,7 @@ class DefaultController extends Controller
      *
      * @param Request $request
      *
-     * @Route("/buscar", name="novosga_monitor_buscar")
+     * @Route("/buscar", name="novosga_monitor_buscar", methods={"GET"})
      */
     public function buscar(Request $request, AtendimentoService $atendimentoService)
     {
@@ -156,8 +155,7 @@ class DefaultController extends Controller
      *
      * @param Request $request
      *
-     * @Route("/transferir/{id}", name="novosga_monitor_transferir")
-     * @Method("POST")
+     * @Route("/transferir/{id}", name="novosga_monitor_transferir", methods={"POST"})
      */
     public function transferir(
         Request $request,
@@ -201,8 +199,7 @@ class DefaultController extends Controller
      *
      * @param Request $request
      *
-     * @Route("/reativar/{id}", name="novosga_monitor_reativar")
-     * @Method("POST")
+     * @Route("/reativar/{id}", name="novosga_monitor_reativar", methods={"POST"})
      */
     public function reativar(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
     {
@@ -234,8 +231,7 @@ class DefaultController extends Controller
      *
      * @param Request $request
      *
-     * @Route("/cancelar/{id}", name="novosga_monitor_cancelar")
-     * @Method("POST")
+     * @Route("/cancelar/{id}", name="novosga_monitor_cancelar", methods={"POST"})
      */
     public function cancelar(
         Request $request,
