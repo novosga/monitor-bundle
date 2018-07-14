@@ -13,7 +13,8 @@
             servicos: [],
             atendimento: null,
             novoServico: '',
-            novaPrioridade: ''
+            novaPrioridade: '',
+            connected: false
         },
         methods: {
             init: function () {
@@ -34,11 +35,13 @@
                 App.Websocket.on('reconnect_failed', function () {
                     App.Websocket.connect();
                     console.log('ws timeout, ajax polling fallback');
+                    self.connected = false;
                     self.update();
                 });
 
                 App.Websocket.on('register ok', function () {
                     console.log('registered!');
+                    self.connected = true;
                 });
 
                 App.Websocket.on('update queue', function () {
@@ -129,6 +132,10 @@
                                 unity: unidade.id
                             });
                             $('.modal').modal('hide');
+                            
+                            if (!self.connected) {
+                                self.update();
+                            }
                         }
                     });
                 });
@@ -159,6 +166,10 @@
                                 unity: unidade.id
                             });
                             $('.modal').modal('hide');
+                            
+                            if (!self.connected) {
+                                self.update();
+                            }
                         }
                     });
                 });
@@ -189,6 +200,10 @@
                                 unity: unidade.id
                             });
                             $('.modal').modal('hide');
+                            
+                            if (!self.connected) {
+                                self.update();
+                            }
                         }
                     });
                 });
