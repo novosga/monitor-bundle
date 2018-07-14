@@ -18,12 +18,11 @@
                 <form class="pull-right" role="search"  v-on:submit.prevent="consulta">
                     <div class="input-group">
                         <input type="text" class="form-search form-control" placeholder="{{ 'placeholder.search'|trans }}" v-model="search">
-                        <span class="input-group-btn">
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fa fa-search"></i>&nbsp;
-                                {{ 'button.find'|trans }}
+                        <div class="input-group-append">
+                            <button type="submit" class="btn btn-primary" title="{{ 'button.find'|trans }}">
+                                <i class="fa fa-search"></i>
                             </button>
-                        </span>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -93,11 +92,11 @@
                             <div class="col-3">
                                 <div class="input-group">
                                     <input type="text" maxlength="10" class="form-search form-control" placeholder="{{ 'modal.search.placeholder'|trans }}" v-model="search">
-                                    <span class="input-group-btn">
+                                    <div class="input-group-append">
                                         <button type="submit" class="btn btn-primary" title="{{ 'modal.search.button.submit'|trans }}">
                                             <i class="fa fa-search"></i>
                                         </button>
-                                    </span>
+                                    </div>
                                 </div>
                             </div>
                         </form>
