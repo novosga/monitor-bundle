@@ -201,9 +201,12 @@ class DefaultController extends Controller
      *
      * @Route("/reativar/{id}", name="novosga_monitor_reativar", methods={"POST"})
      */
-    public function reativar(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
-    {
-        $em       = $this->getDoctrine()->getManager();
+    public function reativar(
+        Request $request,
+        Atendimento $atendimento,
+        AtendimentoService $atendimentoService,
+        TranslatorInterface $translator
+    ) {
         $envelope = new Envelope();
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
@@ -217,11 +220,7 @@ class DefaultController extends Controller
             throw new Exception($translator->trans('error.reactive.invalid_status', [], self::DOMAIN));
         }
         
-        $atendimento->setStatus(AtendimentoService::SENHA_EMITIDA);
-        $atendimento->setDataFim(null);
-        
-        $em->merge($atendimento);
-        $em->flush();
+        $atendimentoService->reativar($atendimento, $unidade);
         
         return $this->json($envelope);
     }
