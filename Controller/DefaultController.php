@@ -21,7 +21,7 @@ use Novosga\Service\AtendimentoService;
 use Novosga\Service\FilaService;
 use Novosga\Service\ServicoService;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Translation\TranslatorInterface;
 
@@ -30,7 +30,7 @@ use Symfony\Component\Translation\TranslatorInterface;
  *
  * @author Rogerio Lino <rogeriolino@gmail.com>
  */
-class DefaultController extends Controller
+class DefaultController extends AbstractController
 {
     const DOMAIN = 'NovosgaMonitorBundle';
     
