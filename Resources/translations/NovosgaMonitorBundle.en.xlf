@@ -13,7 +13,7 @@
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
-        <target>Manage unit calls</target>
+        <target>Manage unit attendance</target>
         
       </trans-unit>
       <trans-unit id="3">
@@ -23,7 +23,7 @@
       </trans-unit>
       <trans-unit id="4">
         <source>placeholder.search</source>
-        <target>Search for password</target>
+        <target>Ticket search</target>
         
       </trans-unit>
       <trans-unit id="5">
@@ -103,7 +103,7 @@
       </trans-unit>
       <trans-unit id="20">
         <source>alert.transfer.text</source>
-        <target>Do you really want to transfer this password?</target>
+        <target>Do you really want to transfer this ticket?</target>
         
       </trans-unit>
       <trans-unit id="21">
@@ -138,7 +138,7 @@
       </trans-unit>
       <trans-unit id="36">
         <source>modal.search.placeholder</source>
-        <target>Full password, acronym or number</target>
+        <target>Full ticket code, letters or number</target>
         
       </trans-unit>
       <trans-unit id="37">

@@ -13,7 +13,7 @@
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
-        <target>Manage unit calls</target>
+        <target>Manage unit attendance</target>
         
       </trans-unit>
       <trans-unit id="3">
@@ -23,7 +23,7 @@
       </trans-unit>
       <trans-unit id="4">
         <source>placeholder.search</source>
-        <target>Issuing passwords</target>
+        <target>Ticket search</target>
         
       </trans-unit>
       <trans-unit id="5">
@@ -93,37 +93,37 @@
       </trans-unit>
       <trans-unit id="18">
         <source>alert.cancel.text</source>
-        <target>Do you really want to cancel this password?</target>
+        <target>Do you really want to cancel this ticket?</target>
         
       </trans-unit>
       <trans-unit id="19">
         <source>alert.reactivate.text</source>
-        <target>Do you really want to reactivate this password?</target>
+        <target>Do you really want to reactivate this ticket?</target>
         
       </trans-unit>
       <trans-unit id="20">
         <source>alert.transfer.text</source>
-        <target>Do you really want to transfer this password?</target>
+        <target>Do you really want to transfer this ticket?</target>
         
       </trans-unit>
       <trans-unit id="21">
         <source>modal.attendance.button.reactivate</source>
-        <target>Re-enable password</target>
+        <target>Re-enable ticket</target>
         
       </trans-unit>
       <trans-unit id="22">
         <source>modal.attendance.button.transfer</source>
-        <target>Download / Change password</target>
+        <target>Transfer / Change ticket</target>
         
       </trans-unit>
       <trans-unit id="23">
         <source>modal.attendance.button.cancel</source>
-        <target>Cancel password</target>
+        <target>Cancel ticket</target>
         
       </trans-unit>
       <trans-unit id="24">
         <source>modal.transfer</source>
-        <target>Cancel password</target>
+        <target>Transfer ticket</target>
         
       </trans-unit>
       <trans-unit id="25">
