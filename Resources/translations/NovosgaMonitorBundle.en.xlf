@@ -13,6 +13,7 @@
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
+        <target>Manage unit calls</target>
         
       </trans-unit>
       <trans-unit id="3">
@@ -22,6 +23,7 @@
       </trans-unit>
       <trans-unit id="4">
         <source>placeholder.search</source>
+        <target>Search for password</target>
         
       </trans-unit>
       <trans-unit id="5">
@@ -81,6 +83,7 @@
       </trans-unit>
       <trans-unit id="16">
         <source>label.no</source>
+        <target>No</target>
         
       </trans-unit>
       <trans-unit id="17">
@@ -100,6 +103,7 @@
       </trans-unit>
       <trans-unit id="20">
         <source>alert.transfer.text</source>
+        <target>Do you really want to transfer this password?</target>
         
       </trans-unit>
       <trans-unit id="21">
@@ -134,6 +138,7 @@
       </trans-unit>
       <trans-unit id="36">
         <source>modal.search.placeholder</source>
+        <target>Full password, acronym or number</target>
         
       </trans-unit>
       <trans-unit id="37">
@@ -173,7 +178,7 @@
       </trans-unit>
       <trans-unit id="44">
         <source>MM/DD/YYYY HH:mm:ss</source>
-        <target>DD/MM/YYYY hh:mm:ss</target>
+        <target>MM/DD/YYYY hh:mm:ss</target>
         
       </trans-unit>
       <trans-unit id="49">
@@ -198,14 +203,17 @@
       </trans-unit>
       <trans-unit id="53">
         <source>error.invalid_form</source>
+        <target>Invalid form</target>
         
       </trans-unit>
       <trans-unit id="54">
         <source>error.reactive.invalid_unity</source>
+        <target>Attempting to reactivate a service from another unit.</target>
         
       </trans-unit>
       <trans-unit id="55">
         <source>error.reactive.invalid_status</source>
+        <target>You can only re-enable a canceled or failed call.</target>
         
       </trans-unit>
       <trans-unit id="56">

@@ -1,5 +1,5 @@
 <?xml version="1.0" ?><xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-  <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="es-AR">
+  <file datatype="plaintext" original="messages.pt_BR.xlf" source-language="pt-BR" target-language="en-US">
     <body>
       <trans-unit id="0">
         <source>module.name</source>
@@ -13,17 +13,17 @@
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
-        <target>Administre las atenciones de la Unidad</target>
+        <target>Manage unit calls</target>
         
       </trans-unit>
       <trans-unit id="3">
         <source>button.find</source>
-        <target>Consultar</target>
+        <target>Search</target>
         
       </trans-unit>
       <trans-unit id="4">
         <source>placeholder.search</source>
-        <target>Buscar turno</target>
+        <target>Issuing passwords</target>
         
       </trans-unit>
       <trans-unit id="5">
@@ -33,7 +33,7 @@
       </trans-unit>
       <trans-unit id="6">
         <source>label.priority</source>
-        <target>Prioridad</target>
+        <target>Priority</target>
         
       </trans-unit>
       <trans-unit id="7">
@@ -43,42 +43,42 @@
       </trans-unit>
       <trans-unit id="8">
         <source>modal.attendance</source>
-        <target>Atención</target>
+        <target>Attendance</target>
         
       </trans-unit>
       <trans-unit id="9">
         <source>modal.attendance.ticket</source>
-        <target>Turno</target>
+        <target>Ticket</target>
         
       </trans-unit>
       <trans-unit id="10">
         <source>label.service</source>
-        <target>Servicio</target>
+        <target>Service</target>
         
       </trans-unit>
       <trans-unit id="11">
         <source>label.ticket.wait_time</source>
-        <target>Tiempo de espera</target>
+        <target>Waiting time</target>
         
       </trans-unit>
       <trans-unit id="12">
         <source>label.customer</source>
-        <target>Cliente</target>
+        <target>Customer </target>
         
       </trans-unit>
       <trans-unit id="13">
         <source>label.customer.name</source>
-        <target>Nombre</target>
+        <target>Name</target>
         
       </trans-unit>
       <trans-unit id="14">
         <source>label.customer.id</source>
-        <target>Nombre</target>
+        <target>Name</target>
         
       </trans-unit>
       <trans-unit id="15">
         <source>label.yes</source>
-        <target>Sí</target>
+        <target>Yes</target>
         
       </trans-unit>
       <trans-unit id="16">
@@ -88,137 +88,137 @@
       </trans-unit>
       <trans-unit id="17">
         <source>alert.title</source>
-        <target>Atención</target>
+        <target>Attention!</target>
         
       </trans-unit>
       <trans-unit id="18">
         <source>alert.cancel.text</source>
-        <target>Desea realmente cancelar ese número?</target>
+        <target>Do you really want to cancel this password?</target>
         
       </trans-unit>
       <trans-unit id="19">
         <source>alert.reactivate.text</source>
-        <target>Desea realmente reactivar ese número?</target>
+        <target>Do you really want to reactivate this password?</target>
         
       </trans-unit>
       <trans-unit id="20">
         <source>alert.transfer.text</source>
-        <target>Realmente desea transferir este turno?</target>
+        <target>Do you really want to transfer this password?</target>
         
       </trans-unit>
       <trans-unit id="21">
         <source>modal.attendance.button.reactivate</source>
-        <target>Reactivar turno</target>
+        <target>Re-enable password</target>
         
       </trans-unit>
       <trans-unit id="22">
         <source>modal.attendance.button.transfer</source>
-        <target>Transferir / Modificar turno</target>
+        <target>Download / Change password</target>
         
       </trans-unit>
       <trans-unit id="23">
         <source>modal.attendance.button.cancel</source>
-        <target>Cancelar turno</target>
+        <target>Cancel password</target>
         
       </trans-unit>
       <trans-unit id="24">
         <source>modal.transfer</source>
-        <target>Transferir turno</target>
+        <target>Cancel password</target>
         
       </trans-unit>
       <trans-unit id="25">
         <source>modal.transfer.button</source>
-        <target>Transferir</target>
+        <target>Download</target>
         
       </trans-unit>
       <trans-unit id="35">
         <source>modal.search</source>
-        <target>Busca</target>
+        <target>Find</target>
         
       </trans-unit>
       <trans-unit id="36">
         <source>modal.search.placeholder</source>
-        <target>Turno completo, sigla o número</target>
+        <target>Complete ticket, letters or number</target>
         
       </trans-unit>
       <trans-unit id="37">
         <source>label.ticket.number</source>
-        <target>Número</target>
+        <target>Number</target>
         
       </trans-unit>
       <trans-unit id="38">
         <source>label.ticket.arrival_date</source>
-        <target>Hora de ingreso</target>
+        <target>Arrival date</target>
         
       </trans-unit>
       <trans-unit id="39">
         <source>label.ticket.start_date</source>
-        <target>Hora de inicio</target>
+        <target>Initial date</target>
         
       </trans-unit>
       <trans-unit id="40">
         <source>label.ticket.end_date</source>
-        <target>Hora de finalización</target>
+        <target>Final date</target>
         
       </trans-unit>
       <trans-unit id="41">
         <source>label.triage</source>
-        <target>Selección</target>
+        <target>Screening</target>
         
       </trans-unit>
       <trans-unit id="42">
         <source>label.ticket.user</source>
-        <target>Operador</target>
+        <target>Operator</target>
         
       </trans-unit>
       <trans-unit id="43">
         <source>label.status</source>
-        <target>Situación</target>
+        <target>Status</target>
         
       </trans-unit>
       <trans-unit id="44">
         <source>MM/DD/YYYY HH:mm:ss</source>
-        <target>DD/MM/YYYY hh:mm:ss</target>
+        <target>MM/DD/YYYY hh:mm:ss</target>
         
       </trans-unit>
       <trans-unit id="49">
         <source>modal.search.button.submit</source>
-        <target>Consultar</target>
+        <target>Search</target>
         
       </trans-unit>
       <trans-unit id="50">
         <source>server.datetime</source>
-        <target>Fecha y hora en el servidor</target>
+        <target>Date and time on server</target>
         
       </trans-unit>
       <trans-unit id="51">
         <source>transferir.type.servico</source>
-        <target>Nuevo servicio</target>
+        <target>New service</target>
         
       </trans-unit>
       <trans-unit id="52">
         <source>transferir.type.prioridade</source>
-        <target>Nueva prioridad</target>
+        <target>New priority </target>
         
       </trans-unit>
       <trans-unit id="53">
         <source>error.invalid_form</source>
-        <target>Formulario Inválido</target>
+        <target>Invalid form</target>
         
       </trans-unit>
       <trans-unit id="54">
         <source>error.reactive.invalid_unity</source>
-        <target>Intentando reactivar una atención de otra unidad.</target>
+        <target>Attempting to reactivate a service from another unit.</target>
         
       </trans-unit>
       <trans-unit id="55">
         <source>error.reactive.invalid_status</source>
-        <target>Sólo es posible reactivar una llamada cancelada o que no ha sido atendida.</target>
+        <target>You can only re-enable a canceled or failed call.</target>
         
       </trans-unit>
       <trans-unit id="56">
         <source>error.ticket.invalid_unity</source>
-        <target>Atención inválida</target>
+        <target>Invalid service</target>
         
       </trans-unit>
     </body>

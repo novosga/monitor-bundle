@@ -193,6 +193,23 @@
         <target>Nova prioridade</target>
         
       </trans-unit>
+      <trans-unit id="53">
+        <source>error.invalid_form</source>
+        
+      </trans-unit>
+      <trans-unit id="54">
+        <source>error.reactive.invalid_unity</source>
+        
+      </trans-unit>
+      <trans-unit id="55">
+        <source>error.reactive.invalid_status</source>
+        
+      </trans-unit>
+      <trans-unit id="56">
+        <source>error.ticket.invalid_unity</source>
+        <target>Atendimento inválido</target>
+        
+      </trans-unit>
     </body>
   </file>
 </xliff>

@@ -13,6 +13,7 @@
       </trans-unit>
       <trans-unit id="2">
         <source>subtitle</source>
+        <target>Administrar las atenciones de la unidad</target>
         
       </trans-unit>
       <trans-unit id="3">
@@ -22,6 +23,7 @@
       </trans-unit>
       <trans-unit id="4">
         <source>placeholder.search</source>
+        <target>Buscar Turno</target>
         
       </trans-unit>
       <trans-unit id="5">
@@ -76,10 +78,12 @@
       </trans-unit>
       <trans-unit id="15">
         <source>label.yes</source>
+        <target>Si</target>
         
       </trans-unit>
       <trans-unit id="16">
         <source>label.no</source>
+        <target>No</target>
         
       </trans-unit>
       <trans-unit id="17">
@@ -99,6 +103,7 @@
       </trans-unit>
       <trans-unit id="20">
         <source>alert.transfer.text</source>
+        <target>¿Desea realmente transferir esta ese numero?</target>
         
       </trans-unit>
       <trans-unit id="21">
@@ -123,6 +128,7 @@
       </trans-unit>
       <trans-unit id="25">
         <source>modal.transfer.button</source>
+        <target>Tranferir</target>
         
       </trans-unit>
       <trans-unit id="35">
@@ -132,6 +138,7 @@
       </trans-unit>
       <trans-unit id="36">
         <source>modal.search.placeholder</source>
+        <target>Contraseña completa, sigla o número</target>
         
       </trans-unit>
       <trans-unit id="37">
@@ -196,14 +203,17 @@
       </trans-unit>
       <trans-unit id="53">
         <source>error.invalid_form</source>
+        <target>Formulario no válido</target>
         
       </trans-unit>
       <trans-unit id="54">
         <source>error.reactive.invalid_unity</source>
+        <target>Intentando reavitvar una atención de otra unidad.</target>
         
       </trans-unit>
       <trans-unit id="55">
         <source>error.reactive.invalid_status</source>
+        <target>Sólo es posible reactivar una atención cancelada o que no ha presentado.</target>
         
       </trans-unit>
       <trans-unit id="56">
