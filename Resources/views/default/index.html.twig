@@ -37,12 +37,17 @@
                     <p>Ninguém aguardando atendimento no momento</p>
                 </div>
             </div>
-            <div class="col-md-6" v-for="item in servicos">
+            <div v-bind:class="{'col-md-6': item.servicoUnidade, 'col-md-12': !item.servicoUnidade}" v-for="item in servicos">
                 <div class="card">
                     <div class="card-header">
-                        {% verbatim %}
-                            {{ item.servicoUnidade.sigla }} - {{ item.servicoUnidade.servico.nome }}
-                        {% endverbatim %}
+                        <span v-if="item.servicoUnidade">
+                            {% verbatim %}
+                                {{ item.servicoUnidade.sigla }} - {{ item.servicoUnidade.servico.nome }}
+                            {% endverbatim %}
+                        </span>
+                        <b v-if="!item.servicoUnidade">
+                            Todos serviços
+                        </b>
                         <div class="pull-right">
                             <span class="badge badge-pill badge-primary">
                                 {{ 'label.no_priority'|trans }}

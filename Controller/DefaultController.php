@@ -43,8 +43,8 @@ class DefaultController extends AbstractController
      */
     public function index(Request $request, ServicoService $servicoService, SecurityService $securityService)
     {
-        $usuario = $this->getUser();
-        $unidade = $usuario->getLotacao()->getUnidade();
+        $usuario  = $this->getUser();
+        $unidade  = $usuario->getLotacao()->getUnidade();
         $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
         
         $transferirForm = $this->createTransferirForm($request, $servicoService);
@@ -72,12 +72,16 @@ class DefaultController extends AbstractController
         FilaService $filaService
     ) {
         $envelope = new Envelope();
-        $usuario = $this->getUser();
-        $unidade = $usuario->getLotacao()->getUnidade();
+        $usuario  = $this->getUser();
+        $unidade  = $usuario->getLotacao()->getUnidade();
         
         $data  = [];
         $param = $request->get('ids');
         $ids   = explode(',', $param ?: '0');
+
+        $data[] = [
+            'fila' => $filaService->filaUnidade($unidade),
+        ];
         
         if (count($ids)) {
             $servicos = $servicoService->servicosUnidade($unidade, ['servico' => $ids]);
