@@ -38,7 +38,7 @@
                 </div>
             </div>
             <div v-bind:class="{'col-md-6': item.servicoUnidade, 'col-md-12': !item.servicoUnidade}" v-for="item in servicos">
-                <div class="card">
+                <div v-bind:class="{'card': true, 'border-dark': !item.servicoUnidade}">
                     <div class="card-header">
                         <span v-if="item.servicoUnidade">
                             {% verbatim %}
