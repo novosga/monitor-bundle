@@ -13,13 +13,13 @@ namespace Novosga\MonitorBundle\Controller;
 
 use App\Service\SecurityService;
 use Exception;
-use Novosga\Entity\Atendimento;
-use Novosga\Entity\Unidade;
+use Novosga\Entity\AtendimentoInterface;
+use Novosga\Entity\UnidadeInterface;
 use Novosga\Http\Envelope;
 use Novosga\MonitorBundle\Form\TransferirType;
-use Novosga\Service\AtendimentoService;
-use Novosga\Service\FilaService;
-use Novosga\Service\ServicoService;
+use App\Service\AtendimentoService;
+use App\Service\FilaService;
+use App\Service\ServicoService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -118,7 +118,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/info_senha/{id}", name="novosga_monitor_infosenha", methods={"GET"})
      */
-    public function infoSenha(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
+    public function infoSenha(Request $request, AtendimentoInterface $atendimento, TranslatorInterface $translator)
     {
         $envelope = new Envelope();
         
@@ -165,7 +165,7 @@ class DefaultController extends AbstractController
         Request $request,
         AtendimentoService $atendimentoService,
         ServicoService $servicoService,
-        Atendimento $atendimento,
+        AtendimentoInterface $atendimento,
         TranslatorInterface $translator
     ) {
         $envelope = new Envelope();
@@ -207,7 +207,7 @@ class DefaultController extends AbstractController
      */
     public function reativar(
         Request $request,
-        Atendimento $atendimento,
+        AtendimentoInterface $atendimento,
         AtendimentoService $atendimentoService,
         TranslatorInterface $translator
     ) {
@@ -239,7 +239,7 @@ class DefaultController extends AbstractController
     public function cancelar(
         Request $request,
         AtendimentoService $atendimentoService,
-        Atendimento $atendimento,
+        AtendimentoInterface $atendimento,
         TranslatorInterface $translator
     ) {
         $envelope = new Envelope();
@@ -258,8 +258,8 @@ class DefaultController extends AbstractController
      */
     private function createTransferirForm(Request $request, ServicoService $servicoService)
     {
-        $usuario = $this->getUser();
-        $unidade = $usuario->getLotacao()->getUnidade();
+        $usuario  = $this->getUser();
+        $unidade  = $usuario->getLotacao()->getUnidade();
         $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
         
         $transferirForm = $this->createForm(TransferirType::class, null, [
@@ -270,8 +270,11 @@ class DefaultController extends AbstractController
         return $transferirForm;
     }
 
-    private function checkAtendimento(Unidade $unidade, Atendimento $atendimento, TranslatorInterface $translator)
-    {
+    private function checkAtendimento(
+        UnidadeInterface $unidade,
+        AtendimentoInterface $atendimento,
+        TranslatorInterface $translator
+    ) {
         if ($atendimento->getUnidade()->getId() != $unidade->getId()) {
             throw new Exception($translator->trans('error.ticket.invalid_unity', [], self::DOMAIN));
         }

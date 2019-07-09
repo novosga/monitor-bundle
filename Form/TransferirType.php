@@ -12,8 +12,8 @@
 namespace Novosga\MonitorBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
-use Novosga\Entity\Prioridade;
-use Novosga\Entity\ServicoUnidade;
+use Novosga\Entity\PrioridadeInterface;
+use Novosga\Entity\ServicoUnidadeInterface;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -30,22 +30,23 @@ class TransferirType extends AbstractType
         
         $builder
             ->add('servico', EntityType::class, [
-                'class' => ServicoUnidade::class,
-                'choices' => $servicos,
-                'placeholder' => '',
-                'label' => 'transferir.type.servico',
+                'class'              => ServicoUnidadeInterface::class,
+                'choices'            => $servicos,
+                'placeholder'        => '',
+                'label'              => 'transferir.type.servico',
                 'translation_domain' => 'NovosgaMonitorBundle',
             ])
             ->add('prioridade', EntityType::class, [
-                'class' => Prioridade::class,
-                'query_builder' => function (EntityRepository $repo) {
-                        return $repo->createQueryBuilder('e')
-                                ->where('e.ativo = TRUE')
-                                ->orderBy('e.peso', 'ASC')
-                                ->addOrderBy('e.nome', 'ASC');
+                'class'              => PrioridadeInterface::class,
+                'query_builder'      => function (EntityRepository $repo) {
+                    return $repo
+                        ->createQueryBuilder('e')
+                        ->where('e.ativo = TRUE')
+                        ->orderBy('e.peso', 'ASC')
+                        ->addOrderBy('e.nome', 'ASC');
                 },
-                'placeholder' => '',
-                'label' => 'transferir.type.prioridade',
+                'placeholder'        => '',
+                'label'              => 'transferir.type.prioridade',
                 'translation_domain' => 'NovosgaMonitorBundle',
             ])
         ;
@@ -56,7 +57,6 @@ class TransferirType extends AbstractType
         $resolver->setRequired('servicos');
     }
 
-    
     public function getBlockPrefix()
     {
         return null;
