@@ -13,17 +13,17 @@ namespace Novosga\MonitorBundle\Controller;
 
 use App\Service\SecurityService;
 use Exception;
-use Novosga\Entity\AtendimentoInterface;
-use Novosga\Entity\UnidadeInterface;
+use Novosga\Entity\Atendimento;
+use Novosga\Entity\Unidade;
 use Novosga\Http\Envelope;
 use Novosga\MonitorBundle\Form\TransferirType;
-use App\Service\AtendimentoService;
-use App\Service\FilaService;
-use App\Service\ServicoService;
+use Novosga\Service\AtendimentoService;
+use Novosga\Service\FilaService;
+use Novosga\Service\ServicoService;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Translation\TranslatorInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * DefaultController
@@ -118,7 +118,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/info_senha/{id}", name="novosga_monitor_infosenha", methods={"GET"})
      */
-    public function infoSenha(Request $request, AtendimentoInterface $atendimento, TranslatorInterface $translator)
+    public function infoSenha(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
     {
         $envelope = new Envelope();
         
@@ -165,7 +165,7 @@ class DefaultController extends AbstractController
         Request $request,
         AtendimentoService $atendimentoService,
         ServicoService $servicoService,
-        AtendimentoInterface $atendimento,
+        Atendimento $atendimento,
         TranslatorInterface $translator
     ) {
         $envelope = new Envelope();
@@ -207,7 +207,7 @@ class DefaultController extends AbstractController
      */
     public function reativar(
         Request $request,
-        AtendimentoInterface $atendimento,
+        Atendimento $atendimento,
         AtendimentoService $atendimentoService,
         TranslatorInterface $translator
     ) {
@@ -239,7 +239,7 @@ class DefaultController extends AbstractController
     public function cancelar(
         Request $request,
         AtendimentoService $atendimentoService,
-        AtendimentoInterface $atendimento,
+        Atendimento $atendimento,
         TranslatorInterface $translator
     ) {
         $envelope = new Envelope();
@@ -271,8 +271,8 @@ class DefaultController extends AbstractController
     }
 
     private function checkAtendimento(
-        UnidadeInterface $unidade,
-        AtendimentoInterface $atendimento,
+        Unidade $unidade,
+        Atendimento $atendimento,
         TranslatorInterface $translator
     ) {
         if ($atendimento->getUnidade()->getId() != $unidade->getId()) {
