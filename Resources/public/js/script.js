@@ -5,7 +5,7 @@
 (function () {
     'use strict'
     
-    var app = new Vue({
+    new Vue({
         el: '#monitor',
         data: {
             search: '',
@@ -14,44 +14,9 @@
             atendimento: null,
             novoServico: '',
             novaPrioridade: '',
-            connected: false
+            unidade: (unidade || {}),
         },
         methods: {
-            init: function () {
-                var self = this;
-                
-                App.Websocket.connect();
-
-                App.Websocket.on('connect', function () {
-                    console.log('connected!');
-                    App.Websocket.emit('register user', {
-                        secret: wsSecret,
-                        user: usuario.id,
-                        unity: unidade.id
-                    });
-                });
-
-                // ajax polling fallback
-                App.Websocket.on('reconnect_failed', function () {
-                    App.Websocket.connect();
-                    console.log('ws timeout, ajax polling fallback');
-                    self.connected = false;
-                    self.update();
-                });
-
-                App.Websocket.on('register ok', function () {
-                    console.log('registered!');
-                    self.connected = true;
-                });
-
-                App.Websocket.on('update queue', function () {
-                    console.log('update queue: do update!');
-                    self.update();
-                });
-                
-                self.update();
-            },
-            
             update: function () {
                 var self = this;
                 App.ajax({
@@ -128,12 +93,9 @@
                             prioridade: novaPrioridade
                         },
                         success: function () {
-                            App.Websocket.emit('change ticket', {
-                                unity: unidade.id
-                            });
                             $('.modal').modal('hide');
                             
-                            if (!self.connected) {
+                            if (!App.SSE.connected) {
                                 self.update();
                             }
                         }
@@ -162,12 +124,9 @@
                         url: App.url('/novosga.monitor/reativar/') + atendimento.id,
                         type: 'post',
                         success: function () {
-                            App.Websocket.emit('change ticket', {
-                                unity: unidade.id
-                            });
                             $('.modal').modal('hide');
                             
-                            if (!self.connected) {
+                            if (!App.SSE.connected) {
                                 self.update();
                             }
                         }
@@ -196,12 +155,9 @@
                         url: App.url('/novosga.monitor/cancelar/') + atendimento.id,
                         type: 'post',
                         success: function () {
-                            App.Websocket.emit('change ticket', {
-                                unity: unidade.id
-                            });
                             $('.modal').modal('hide');
                             
-                            if (!self.connected) {
+                            if (!App.SSE.connected) {
                                 self.update();
                             }
                         }
@@ -218,8 +174,22 @@
                 });
                 return filtered.length;
             }
+        },
+        mounted() {
+            App.SSE.connect([
+                `/unidades/${this.unidade.id}/fila`
+            ]);
+
+            App.SSE.onmessage = (e, data) => {
+                this.update();
+            };
+
+            // ajax polling fallback
+            App.SSE.ondisconnect = () => {
+                this.update();
+            };
+            
+            this.update();
         }
     });
-    
-    app.init();
 })();
