@@ -11,7 +11,6 @@
 
 namespace Novosga\MonitorBundle\Controller;
 
-use App\Service\SecurityService;
 use Exception;
 use Novosga\Entity\Atendimento;
 use Novosga\Entity\Unidade;
@@ -41,7 +40,7 @@ class DefaultController extends AbstractController
      *
      * @Route("/", name="novosga_monitor_index", methods={"GET"})
      */
-    public function index(Request $request, ServicoService $servicoService, SecurityService $securityService)
+    public function index(Request $request, ServicoService $servicoService)
     {
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
@@ -55,7 +54,6 @@ class DefaultController extends AbstractController
             'servicos'       => $servicos,
             'transferirForm' => $transferirForm->createView(),
             'milis'          => time() * 1000,
-            'wsSecret'       => $securityService->getWebsocketSecret(),
         ]);
     }
 
