@@ -173,6 +173,14 @@
                     return atendimento.prioridade.peso === 0;
                 });
                 return filtered.length;
+            },
+
+            getItemFilaStyle(atendimento) {
+                let styles = ['color: black']
+                if (atendimento.prioridade.cor) {
+                    styles.push(`color: ${atendimento.prioridade.cor}`)
+                }
+                return styles.join(';')
             }
         },
         mounted() {

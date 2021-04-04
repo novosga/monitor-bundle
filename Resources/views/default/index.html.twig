@@ -71,8 +71,15 @@
                     </div>
                     <div class="card-body">
                         <ul class="fila list-inline">
-                            <li v-for="atendimento in item.fila" v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }" class="list-inline-item">
-                                <a href="#" v-on:click="view(atendimento)" v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.tempoEspera + ')'">
+                            <li
+                                v-for="atendimento in item.fila"
+                                v-bind:class="{prioridade: atendimento.prioridade.peso > 0 }"
+                                class="list-inline-item">
+                                <a 
+                                    href="#"
+                                    v-on:click="view(atendimento)"
+                                    v-bind:style="getItemFilaStyle(atendimento)"
+                                    v-bind:title="atendimento.prioridade.nome + ' (' + atendimento.tempoEspera + ')'">
                                     {% verbatim %}
                                         {{atendimento.senha.format}}
                                     {% endverbatim %}

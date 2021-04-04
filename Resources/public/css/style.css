@@ -18,7 +18,7 @@ body>section {
 }
 
 #monitor .servicos li.prioridade a {
-    color: red;
+    font-weight: bold;
 }
 
 #dialog-transfere div #transfere_numero {
