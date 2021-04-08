@@ -17,6 +17,7 @@ use Novosga\Entity\ServicoUnidade;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransferirType extends AbstractType
 {
@@ -34,7 +35,6 @@ class TransferirType extends AbstractType
                 'choices'            => $servicos,
                 'placeholder'        => '',
                 'label'              => 'transferir.type.servico',
-                'translation_domain' => 'NovosgaMonitorBundle',
             ])
             ->add('prioridade', EntityType::class, [
                 'class'              => Prioridade::class,
@@ -47,14 +47,17 @@ class TransferirType extends AbstractType
                 },
                 'placeholder'        => '',
                 'label'              => 'transferir.type.prioridade',
-                'translation_domain' => 'NovosgaMonitorBundle',
             ])
         ;
     }
     
-    public function configureOptions(\Symfony\Component\OptionsResolver\OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setRequired('servicos');
+        $resolver
+            ->setRequired('servicos')
+            ->setDefaults([
+                'translation_domain' => 'NovosgaMonitorBundle',
+            ]);
     }
 
     public function getBlockPrefix()
