@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Novo SGA project.
  *
@@ -12,8 +14,8 @@
 namespace Novosga\MonitorBundle\Form;
 
 use Doctrine\ORM\EntityRepository;
-use Novosga\Entity\Prioridade;
-use Novosga\Entity\ServicoUnidade;
+use App\Entity\Prioridade;
+use App\Entity\ServicoUnidade;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;

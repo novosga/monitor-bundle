@@ -49,19 +49,19 @@
                             Todos serviços
                         </b>
                         <div class="pull-right">
-                            <span class="badge badge-pill badge-primary">
+                            <span class="badge text-bg-primary">
                                 {{ 'label.no_priority'|trans }}
                                 {% verbatim %}
                                     {{ totalPorSituacao(item.fila, false) }}
                                 {% endverbatim %}
                             </span>
-                            <span class="badge badge-pill badge-danger">
+                            <span class="badge text-bg-danger">
                                 {{ 'label.priority'|trans }}
                                 {% verbatim %}
                                     {{ totalPorSituacao(item.fila, true) }}
                                 {% endverbatim %}
                             </span>
-                            <span class="badge badge-pill badge-secondary">
+                            <span class="badge text-bg-secondary">
                                 {{ 'label.total'|trans }}
                                 {% verbatim %}
                                     {{ item.fila.length }}
@@ -97,7 +97,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ 'modal.search'|trans }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form class="row" role="form" v-on:submit.prevent="consultar">
@@ -178,7 +178,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title">{{ 'modal.attendance'|trans }}</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body" v-if="atendimento">
                         <input type="hidden" v-bind:valuee="atendimento.id" />
@@ -326,7 +326,7 @@
                                     {% endverbatim %}
                                 </span>
                             </h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
                             

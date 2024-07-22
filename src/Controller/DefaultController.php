@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /*
  * This file is part of the Novo SGA project.
  *
@@ -12,16 +14,20 @@
 namespace Novosga\MonitorBundle\Controller;
 
 use Exception;
-use Novosga\Entity\Atendimento;
-use Novosga\Entity\Unidade;
+use Novosga\Entity\AtendimentoInterface;
+use Novosga\Entity\UnidadeInterface;
+use Novosga\Entity\UsuarioInterface;
 use Novosga\Http\Envelope;
 use Novosga\MonitorBundle\Form\TransferirType;
-use Novosga\Service\AtendimentoService;
-use Novosga\Service\FilaService;
-use Novosga\Service\ServicoService;
+use Novosga\MonitorBundle\NovosgaMonitorBundle;
+use Novosga\Service\AtendimentoServiceInterface;
+use Novosga\Service\FilaServiceInterface;
+use Novosga\Service\ServicoServiceInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -29,64 +35,53 @@ use Symfony\Contracts\Translation\TranslatorInterface;
  *
  * @author Rogerio Lino <rogeriolino@gmail.com>
  */
+#[Route("/", name: "novosga_monitor_")]
 class DefaultController extends AbstractController
 {
-    const DOMAIN = 'NovosgaMonitorBundle';
-    
-    /**
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @Route("/", name="novosga_monitor_index", methods={"GET"})
-     */
-    public function index(Request $request, ServicoService $servicoService)
+    #[Route("/", name: "index", methods: ["GET"])]
+    public function index(ServicoServiceInterface $servicoService): Response
     {
+        /** @var UsuarioInterface */
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
         $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
-        
-        $transferirForm = $this->createTransferirForm($request, $servicoService);
+
+        $transferirForm = $this->createTransferirForm($servicoService);
 
         return $this->render('@NovosgaMonitor/default/index.html.twig', [
             'usuario'        => $usuario,
             'unidade'        => $unidade,
             'servicos'       => $servicos,
-            'transferirForm' => $transferirForm->createView(),
+            'transferirForm' => $transferirForm,
             'milis'          => time() * 1000,
         ]);
     }
 
-    /**
-     *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\Response
-     *
-     * @Route("/ajax_update", name="novosga_monitor_ajaxupdate", methods={"GET"})
-     */
+    #[Route("/ajax_update", name: "ajaxupdate", methods: ["GET"])]
     public function ajaxUpdate(
         Request $request,
-        ServicoService $servicoService,
-        FilaService $filaService
-    ) {
+        ServicoServiceInterface $servicoService,
+        FilaServiceInterface $filaService,
+    ): Response {
         $envelope = new Envelope();
+        /** @var UsuarioInterface */
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
-        
+
         $data  = [];
         $param = $request->get('ids');
         $ids   = explode(',', $param ?: '0');
 
         $data[] = [
-            'fila' => $filaService->filaUnidade($unidade),
+            'fila' => $filaService->getFilaUnidade($unidade),
         ];
-        
+
         if (count($ids)) {
             $servicos = $servicoService->servicosUnidade($unidade, ['servico' => $ids]);
 
             if ($servicos) {
                 foreach ($servicos as $su) {
-                    $rs = $filaService->filaServico($unidade, $su->getServico());
+                    $rs = $filaService->getFilaServico($unidade, $su->getServico());
                     $total = count($rs);
                     // prevent overhead
                     if ($total) {
@@ -103,23 +98,26 @@ class DefaultController extends AbstractController
                 }
             }
         }
-        
+
         $envelope->setData($data);
 
         return $this->json($envelope);
     }
 
-    /**
-     *
-     * @param Request $request
-     * @return Response
-     *
-     * @Route("/info_senha/{id}", name="novosga_monitor_infosenha", methods={"GET"})
-     */
-    public function infoSenha(Request $request, Atendimento $atendimento, TranslatorInterface $translator)
-    {
+    #[Route("/info_senha/{id}", name: "infosenha", methods: ["GET"])]
+    public function infoSenha(
+        AtendimentoServiceInterface $atendimentoService,
+        TranslatorInterface $translator,
+        int $id,
+    ): Response {
+        $atendimento = $atendimentoService->getById($id);
+        if (!$atendimento) {
+            throw $this->createNotFoundException();
+        }
+
         $envelope = new Envelope();
-        
+    
+        /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
@@ -133,41 +131,42 @@ class DefaultController extends AbstractController
 
     /**
      * Busca os atendimentos a partir do número da senha.
-     *
-     * @param Request $request
-     *
-     * @Route("/buscar", name="novosga_monitor_buscar", methods={"GET"})
      */
-    public function buscar(Request $request, AtendimentoService $atendimentoService)
+    #[Route("/buscar", name: "buscar", methods: ["GET"])]
+    public function buscar(Request $request, AtendimentoServiceInterface $atendimentoService): Response
     {
         $envelope = new Envelope();
-        
+
+        /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
         $numero = $request->get('numero');
 
         $atendimentos = $atendimentoService->buscaAtendimentos($unidade, $numero);
         $envelope->setData($atendimentos);
-        
+
         return $this->json($envelope);
     }
 
     /**
      * Transfere o atendimento para outro serviço e prioridade.
-     *
-     * @param Request $request
-     *
-     * @Route("/transferir/{id}", name="novosga_monitor_transferir", methods={"POST"})
      */
+    #[Route("/transferir/{id}", name: "transferir", methods: ["POST"])]
     public function transferir(
         Request $request,
-        AtendimentoService $atendimentoService,
-        ServicoService $servicoService,
-        Atendimento $atendimento,
-        TranslatorInterface $translator
-    ) {
+        AtendimentoServiceInterface $atendimentoService,
+        ServicoServiceInterface $servicoService,
+        TranslatorInterface $translator,
+        int $id,
+    ): Response {
+        $atendimento = $atendimentoService->getById($id);
+        if (!$atendimento) {
+            throw $this->createNotFoundException();
+        }
+
         $envelope = new Envelope();
         
+        /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
@@ -175,11 +174,12 @@ class DefaultController extends AbstractController
 
         $data = json_decode($request->getContent(), true);
 
-        $transferirForm = $this->createTransferirForm($request, $servicoService);
-        $transferirForm->submit($data);
+        $transferirForm = $this
+            ->createTransferirForm($servicoService)
+            ->submit($data);
 
         if (!$transferirForm->isValid()) {
-            throw new Exception($translator->trans('error.invalid_form', [], self::DOMAIN));
+            throw new Exception($translator->trans('error.invalid_form', [], NovosgaMonitorBundle::getDomain()));
         }
         
         $servicoUnidade = $transferirForm->get('servico')->getData();
@@ -198,28 +198,30 @@ class DefaultController extends AbstractController
     /**
      * Reativa o atendimento para o mesmo serviço e mesma prioridade.
      * Só pode reativar atendimentos que foram: Cancelados ou Não Compareceu.
-     *
-     * @param Request $request
-     *
-     * @Route("/reativar/{id}", name="novosga_monitor_reativar", methods={"POST"})
      */
+    #[Route("/reativar/{id}", name: "reativar", methods: ["POST"])]
     public function reativar(
-        Request $request,
-        Atendimento $atendimento,
-        AtendimentoService $atendimentoService,
-        TranslatorInterface $translator
+        AtendimentoServiceInterface $atendimentoService,
+        TranslatorInterface $translator,
+        int $id,
     ) {
+        $atendimento = $atendimentoService->getById($id);
+        if (!$atendimento) {
+            throw $this->createNotFoundException();
+        }
+
         $envelope = new Envelope();
+        /** @var UsuarioInterface */
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
-        $statuses = [AtendimentoService::SENHA_CANCELADA, AtendimentoService::NAO_COMPARECEU];
+        $statuses = [AtendimentoServiceInterface::SENHA_CANCELADA, AtendimentoServiceInterface::NAO_COMPARECEU];
 
         if ($atendimento->getUnidade()->getId() !== $unidade->getId()) {
-            throw new Exception($translator->trans('error.reactive.invalid_unity', [], self::DOMAIN));
+            throw new Exception($translator->trans('error.reactive.invalid_unity', [], NovosgaMonitorBundle::getDomain()));
         }
 
         if (!in_array($atendimento->getStatus(), $statuses)) {
-            throw new Exception($translator->trans('error.reactive.invalid_status', [], self::DOMAIN));
+            throw new Exception($translator->trans('error.reactive.invalid_status', [], NovosgaMonitorBundle::getDomain()));
         }
         
         $atendimentoService->reativar($atendimento, $unidade);
@@ -229,19 +231,21 @@ class DefaultController extends AbstractController
 
     /**
      * Atualiza o status da senha para cancelado.
-     *
-     * @param Request $request
-     *
-     * @Route("/cancelar/{id}", name="novosga_monitor_cancelar", methods={"POST"})
      */
+    #[Route("/cancelar/{id}", name: "_cancelar", methods: ["POST"])]
     public function cancelar(
-        Request $request,
-        AtendimentoService $atendimentoService,
-        Atendimento $atendimento,
-        TranslatorInterface $translator
-    ) {
+        AtendimentoServiceInterface $atendimentoService,
+        TranslatorInterface $translator,
+        int $id,
+    ): Response {
+        $atendimento = $atendimentoService->getById($id);
+        if (!$atendimento) {
+            throw $this->createNotFoundException();
+        }
+
         $envelope = new Envelope();
-        
+
+        /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
@@ -251,30 +255,28 @@ class DefaultController extends AbstractController
         return $this->json($envelope);
     }
 
-    /**
-     * @return TransferirType
-     */
-    private function createTransferirForm(Request $request, ServicoService $servicoService)
+    private function createTransferirForm(ServicoServiceInterface $servicoService): FormInterface
     {
+        /** @var UsuarioInterface */
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
         $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
-        
+
         $transferirForm = $this->createForm(TransferirType::class, null, [
             'csrf_protection' => false,
             'servicos'        => $servicos,
         ]);
-        
+
         return $transferirForm;
     }
 
     private function checkAtendimento(
-        Unidade $unidade,
-        Atendimento $atendimento,
-        TranslatorInterface $translator
-    ) {
+        UnidadeInterface $unidade,
+        AtendimentoInterface $atendimento,
+        TranslatorInterface $translator,
+    ): void {
         if ($atendimento->getUnidade()->getId() != $unidade->getId()) {
-            throw new Exception($translator->trans('error.ticket.invalid_unity', [], self::DOMAIN));
+            throw new Exception($translator->trans('error.ticket.invalid_unity', [], NovosgaMonitorBundle::getDomain()));
         }
     }
 }

@@ -3,15 +3,31 @@
     "license": "MIT",
     "type": "symfony-bundle",
     "autoload": {
-        "psr-4": { "Novosga\\MonitorBundle\\": "" }
+        "psr-4": { "Novosga\\MonitorBundle\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Novosga\\MonitorBundle\\Tests\\": "tests/" }
     },
     "require": {
-        "php": ">=7.2.5",
-        "novosga/core": "^2.1"
+        "php": ">=8.2",
+        "doctrine/orm": "^3.2",
+        "novosga/core": "2.2.x-dev",
+        "symfony/framework-bundle": "7.1.*",
+        "symfony/form": "7.1.*"
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "phpunit/phpunit": "^9.5",
+        "slevomat/coding-standard": "~8.0"
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "2.1-dev"
+            "dev-master": "2.2-dev"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
         }
     }
 }
