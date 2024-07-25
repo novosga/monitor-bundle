@@ -13,46 +13,43 @@ declare(strict_types=1);
 
 namespace Novosga\MonitorBundle\Form;
 
-use Doctrine\ORM\EntityRepository;
-use App\Entity\Prioridade;
-use App\Entity\ServicoUnidade;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
+use Novosga\Repository\PrioridadeRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class TransferirType extends AbstractType
 {
-    /**
-     * @param FormBuilderInterface $builder
-     * @param array $options
-     */
+    public function __construct(
+        private readonly PrioridadeRepositoryInterface $prioridadeRepository,
+    ) {
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $servicos = $options['servicos'];
-        
+        $prioridades = $this
+            ->prioridadeRepository
+                ->createQueryBuilder('e')
+                ->where('e.ativo = TRUE')
+                ->orderBy('e.peso', 'ASC')
+                ->addOrderBy('e.nome', 'ASC');
+
         $builder
-            ->add('servico', EntityType::class, [
-                'class'              => ServicoUnidade::class,
-                'choices'            => $servicos,
-                'placeholder'        => '',
-                'label'              => 'transferir.type.servico',
+            ->add('servico', ChoiceType::class, [
+                'choices' => $servicos,
+                'placeholder' => '',
+                'label' => 'transferir.type.servico',
             ])
-            ->add('prioridade', EntityType::class, [
-                'class'              => Prioridade::class,
-                'query_builder'      => function (EntityRepository $repo) {
-                    return $repo
-                        ->createQueryBuilder('e')
-                        ->where('e.ativo = TRUE')
-                        ->orderBy('e.peso', 'ASC')
-                        ->addOrderBy('e.nome', 'ASC');
-                },
-                'placeholder'        => '',
-                'label'              => 'transferir.type.prioridade',
+            ->add('prioridade', ChoiceType::class, [
+                'choices' => $prioridades,
+                'placeholder' => '',
+                'label' => 'transferir.type.prioridade',
             ])
         ;
     }
-    
+
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver

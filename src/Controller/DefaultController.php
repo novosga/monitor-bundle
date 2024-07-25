@@ -18,6 +18,7 @@ use Novosga\Entity\AtendimentoInterface;
 use Novosga\Entity\UnidadeInterface;
 use Novosga\Entity\UsuarioInterface;
 use Novosga\Http\Envelope;
+use Novosga\MonitorBundle\Dto\TransferirAtendimentoDto;
 use Novosga\MonitorBundle\Form\TransferirType;
 use Novosga\MonitorBundle\NovosgaMonitorBundle;
 use Novosga\Service\AtendimentoServiceInterface;
@@ -28,6 +29,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Attribute\MapRequestPayload;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
@@ -69,32 +71,28 @@ class DefaultController extends AbstractController
         $unidade  = $usuario->getLotacao()->getUnidade();
 
         $data  = [];
-        $param = $request->get('ids');
-        $ids   = explode(',', $param ?: '0');
-
+        $param = $request->get('ids', '');
+        $ids = array_filter(explode(',', $param), fn ($i) => $i > 0);
         $data[] = [
             'fila' => $filaService->getFilaUnidade($unidade),
         ];
 
         if (count($ids)) {
             $servicos = $servicoService->servicosUnidade($unidade, ['servico' => $ids]);
-
-            if ($servicos) {
-                foreach ($servicos as $su) {
-                    $rs = $filaService->getFilaServico($unidade, $su->getServico());
-                    $total = count($rs);
-                    // prevent overhead
-                    if ($total) {
-                        $fila = [];
-                        foreach ($rs as $atendimento) {
-                            $arr = $atendimento->jsonSerialize(true);
-                            $fila[] = $arr;
-                        }
-                        $data[] = [
-                            'servicoUnidade' => $su,
-                            'fila' => $fila,
-                        ];
+            foreach ($servicos as $su) {
+                $rs = $filaService->getFilaServico($unidade, $su->getServico());
+                $total = count($rs);
+                // prevent overhead
+                if ($total) {
+                    $fila = [];
+                    foreach ($rs as $atendimento) {
+                        $arr = $atendimento->jsonSerialize();
+                        $fila[] = $arr;
                     }
+                    $data[] = [
+                        'servicoUnidade' => $su,
+                        'fila' => $fila,
+                    ];
                 }
             }
         }
@@ -116,7 +114,7 @@ class DefaultController extends AbstractController
         }
 
         $envelope = new Envelope();
-    
+
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
@@ -153,11 +151,11 @@ class DefaultController extends AbstractController
      */
     #[Route("/transferir/{id}", name: "transferir", methods: ["POST"])]
     public function transferir(
-        Request $request,
         AtendimentoServiceInterface $atendimentoService,
         ServicoServiceInterface $servicoService,
         TranslatorInterface $translator,
         int $id,
+        #[MapRequestPayload] TransferirAtendimentoDto $data,
     ): Response {
         $atendimento = $atendimentoService->getById($id);
         if (!$atendimento) {
@@ -165,25 +163,23 @@ class DefaultController extends AbstractController
         }
 
         $envelope = new Envelope();
-        
+
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
         $this->checkAtendimento($unidade, $atendimento, $translator);
 
-        $data = json_decode($request->getContent(), true);
-
         $transferirForm = $this
             ->createTransferirForm($servicoService)
-            ->submit($data);
+            ->submit(json_encode($data));
 
         if (!$transferirForm->isValid()) {
             throw new Exception($translator->trans('error.invalid_form', [], NovosgaMonitorBundle::getDomain()));
         }
-        
+
         $servicoUnidade = $transferirForm->get('servico')->getData();
-        $prioridade     = $transferirForm->get('prioridade')->getData();
+        $prioridade = $transferirForm->get('prioridade')->getData();
 
         $atendimentoService->transferir(
             $atendimento,
@@ -204,7 +200,7 @@ class DefaultController extends AbstractController
         AtendimentoServiceInterface $atendimentoService,
         TranslatorInterface $translator,
         int $id,
-    ) {
+    ): Response {
         $atendimento = $atendimentoService->getById($id);
         if (!$atendimento) {
             throw $this->createNotFoundException();
@@ -217,15 +213,27 @@ class DefaultController extends AbstractController
         $statuses = [AtendimentoServiceInterface::SENHA_CANCELADA, AtendimentoServiceInterface::NAO_COMPARECEU];
 
         if ($atendimento->getUnidade()->getId() !== $unidade->getId()) {
-            throw new Exception($translator->trans('error.reactive.invalid_unity', [], NovosgaMonitorBundle::getDomain()));
+            throw new Exception(
+                $translator->trans(
+                    'error.reactive.invalid_unity',
+                    [],
+                    NovosgaMonitorBundle::getDomain(),
+                ),
+            );
         }
 
         if (!in_array($atendimento->getStatus(), $statuses)) {
-            throw new Exception($translator->trans('error.reactive.invalid_status', [], NovosgaMonitorBundle::getDomain()));
+            throw new Exception(
+                $translator->trans(
+                    'error.reactive.invalid_status',
+                    [],
+                    NovosgaMonitorBundle::getDomain(),
+                ),
+            );
         }
-        
+
         $atendimentoService->reativar($atendimento, $unidade);
-        
+
         return $this->json($envelope);
     }
 
@@ -264,7 +272,7 @@ class DefaultController extends AbstractController
 
         $transferirForm = $this->createForm(TransferirType::class, null, [
             'csrf_protection' => false,
-            'servicos'        => $servicos,
+            'servicos' => $servicos,
         ]);
 
         return $transferirForm;
@@ -276,7 +284,13 @@ class DefaultController extends AbstractController
         TranslatorInterface $translator,
     ): void {
         if ($atendimento->getUnidade()->getId() != $unidade->getId()) {
-            throw new Exception($translator->trans('error.ticket.invalid_unity', [], NovosgaMonitorBundle::getDomain()));
+            throw new Exception(
+                $translator->trans(
+                    'error.ticket.invalid_unity',
+                    [],
+                    NovosgaMonitorBundle::getDomain(),
+                ),
+            );
         }
     }
 }
