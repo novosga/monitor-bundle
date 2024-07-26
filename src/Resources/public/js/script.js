@@ -15,6 +15,9 @@
             novoServico: '',
             novaPrioridade: '',
             unidade: (unidade || {}),
+            viewModal: null,
+            transfereModal: null,
+            buscaModal: null,
         },
         methods: {
             update: function () {
@@ -33,19 +36,19 @@
             /**
              * Busca informacoes do atendimento pelo id.
              */
-            view: function (atendimento) {
+            view(atendimento) {
                 var self = this;
                 App.ajax({
                     url: App.url('/novosga.monitor/info_senha/') + atendimento.id,
                     success: function (response) {
                         self.atendimento = response.data;
-                        $('#dialog-view').modal('show');
+                        self.viewModal.show();
                     }
                 });
             },
 
-            consulta: function () {
-                $('#dialog-busca').modal('show');
+            consulta() {
+                this.buscaModal.show();
                 this.consultar();
             },
 
@@ -63,9 +66,9 @@
                 });
             },
 
-            transfere: function (atendimento) {
+            transfere(atendimento) {
                 this.atendimento = atendimento;
-                $('#dialog-transfere').modal('show');
+                this.transfereModal.show();
             },
 
             transferir: function (atendimento, novoServico, novaPrioridade) {
@@ -78,7 +81,6 @@
                         labelNao,
                         labelSim
                     ],
-                    //dangerMode: true,
                 })
                 .then(function (ok) {
                     if (!ok) {
@@ -89,12 +91,11 @@
                         url: App.url('/novosga.monitor/transferir/') + atendimento.id,
                         type: 'post',
                         data: {
-                            servico: novoServico,
-                            prioridade: novaPrioridade
+                            servico: parseInt(novoServico),
+                            prioridade: parseInt(novaPrioridade)
                         },
-                        success: function () {
-                            $('.modal').modal('hide');
-                            
+                        success() {
+                            App.Modal.closeAll();
                             if (!App.SSE.connected) {
                                 self.update();
                             }
@@ -124,8 +125,7 @@
                         url: App.url('/novosga.monitor/reativar/') + atendimento.id,
                         type: 'post',
                         success: function () {
-                            $('.modal').modal('hide');
-                            
+                            App.Modal.closeAll();
                             if (!App.SSE.connected) {
                                 self.update();
                             }
@@ -155,8 +155,7 @@
                         url: App.url('/novosga.monitor/cancelar/') + atendimento.id,
                         type: 'post',
                         success: function () {
-                            $('.modal').modal('hide');
-                            
+                            App.Modal.closeAll();
                             if (!App.SSE.connected) {
                                 self.update();
                             }
@@ -184,6 +183,10 @@
             }
         },
         mounted() {
+            this.viewModal = new bootstrap.Modal(this.$refs.viewModal);
+            this.transfereModal = new bootstrap.Modal(this.$refs.transfereModal);
+            this.buscaModal = new bootstrap.Modal(this.$refs.buscaModal);
+
             App.SSE.connect([
                 `/unidades/${this.unidade.id}/fila`
             ]);

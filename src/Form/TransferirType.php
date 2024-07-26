@@ -13,6 +13,8 @@ declare(strict_types=1);
 
 namespace Novosga\MonitorBundle\Form;
 
+use Novosga\Entity\PrioridadeInterface;
+use Novosga\Entity\ServicoUnidadeInterface;
 use Novosga\Repository\PrioridadeRepositoryInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -31,19 +33,25 @@ class TransferirType extends AbstractType
         $servicos = $options['servicos'];
         $prioridades = $this
             ->prioridadeRepository
-                ->createQueryBuilder('e')
-                ->where('e.ativo = TRUE')
-                ->orderBy('e.peso', 'ASC')
-                ->addOrderBy('e.nome', 'ASC');
+            ->createQueryBuilder('e')
+            ->where('e.ativo = TRUE')
+            ->orderBy('e.peso', 'ASC')
+            ->addOrderBy('e.nome', 'ASC')
+            ->getQuery()
+            ->getResult();
 
         $builder
             ->add('servico', ChoiceType::class, [
                 'choices' => $servicos,
+                'choice_label' => function (?ServicoUnidadeInterface $su) {
+                    return sprintf('%s - %s', $su?->getSigla(), $su?->getServico()->getNome());
+                },
                 'placeholder' => '',
                 'label' => 'transferir.type.servico',
             ])
             ->add('prioridade', ChoiceType::class, [
                 'choices' => $prioridades,
+                'choice_label' => fn (?PrioridadeInterface $prioridade) => $prioridade?->getNome(),
                 'placeholder' => '',
                 'label' => 'transferir.type.prioridade',
             ])
@@ -56,10 +64,11 @@ class TransferirType extends AbstractType
             ->setRequired('servicos')
             ->setDefaults([
                 'translation_domain' => 'NovosgaMonitorBundle',
+                'csrf_protection' => false,
             ]);
     }
 
-    public function getBlockPrefix()
+    public function getBlockPrefix(): string
     {
         return '';
     }

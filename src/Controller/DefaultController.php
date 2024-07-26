@@ -172,20 +172,20 @@ class DefaultController extends AbstractController
 
         $transferirForm = $this
             ->createTransferirForm($servicoService)
-            ->submit(json_encode($data));
+            ->submit($data->jsonSerialize());
 
-        if (!$transferirForm->isValid()) {
+        if (!$transferirForm->isSubmitted() || !$transferirForm->isValid()) {
             throw new Exception($translator->trans('error.invalid_form', [], NovosgaMonitorBundle::getDomain()));
         }
 
         $servicoUnidade = $transferirForm->get('servico')->getData();
-        $prioridade = $transferirForm->get('prioridade')->getData();
+        $novaPrioridade = $transferirForm->get('prioridade')->getData();
 
         $atendimentoService->transferir(
             $atendimento,
-            $unidade,
+            $usuario,
             $servicoUnidade->getServico(),
-            $prioridade
+            $novaPrioridade,
         );
 
         return $this->json($envelope);
@@ -232,7 +232,7 @@ class DefaultController extends AbstractController
             );
         }
 
-        $atendimentoService->reativar($atendimento, $unidade);
+        $atendimentoService->reativar($atendimento, $usuario);
 
         return $this->json($envelope);
     }
@@ -258,7 +258,7 @@ class DefaultController extends AbstractController
         $unidade = $usuario->getLotacao()->getUnidade();
 
         $this->checkAtendimento($unidade, $atendimento, $translator);
-        $atendimentoService->cancelar($atendimento);
+        $atendimentoService->cancelar($atendimento, $usuario);
 
         return $this->json($envelope);
     }
@@ -266,12 +266,11 @@ class DefaultController extends AbstractController
     private function createTransferirForm(ServicoServiceInterface $servicoService): FormInterface
     {
         /** @var UsuarioInterface */
-        $usuario  = $this->getUser();
-        $unidade  = $usuario->getLotacao()->getUnidade();
+        $usuario = $this->getUser();
+        $unidade = $usuario->getLotacao()->getUnidade();
         $servicos = $servicoService->servicosUnidade($unidade, ['ativo' => true]);
 
         $transferirForm = $this->createForm(TransferirType::class, null, [
-            'csrf_protection' => false,
             'servicos' => $servicos,
         ]);
 

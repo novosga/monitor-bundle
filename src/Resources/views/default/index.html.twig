@@ -92,7 +92,7 @@
         </div>
         
         {# dialog busca #}
-        <div id="dialog-busca" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div ref="buscaModal" id="dialog-busca" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -173,7 +173,7 @@
         </div>
 
         {# dialog view #}
-        <div id="dialog-view" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div ref="viewModal" id="dialog-view" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -313,7 +313,7 @@
         </div>
 
         {# transfere #}
-        <div id="dialog-transfere" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div ref="transfereModal" id="dialog-transfere" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 {{ form_start(transferirForm, { attr: { 'v-on:submit.prevent': 'transferir(atendimento, novoServico, novaPrioridade)' } }) }}
                     <div class="modal-content" v-if="atendimento">

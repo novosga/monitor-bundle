@@ -13,16 +13,26 @@ declare(strict_types=1);
 
 namespace Novosga\MonitorBundle\Dto;
 
+use JsonSerializable;
+
 /**
  * TransferirAtendimentoDto
  *
  * @author Rogerio Lino <rogeriolino@gmail.com>
  */
-final readonly class TransferirAtendimentoDto
+final readonly class TransferirAtendimentoDto implements JsonSerializable
 {
     public function __construct(
         public ?int $servico = null,
         public ?int $prioridade = null,
     ) {
+    }
+
+    public function jsonSerialize(): mixed
+    {
+        return [
+            'servico' => $this->servico,
+            'prioridade' => $this->prioridade,
+        ];
     }
 }
