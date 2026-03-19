@@ -65,10 +65,10 @@ class DefaultController extends AbstractController
         ServicoServiceInterface $servicoService,
         FilaServiceInterface $filaService,
     ): Response {
-        $envelope = new Envelope();
         /** @var UsuarioInterface */
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
+        $envelope = new Envelope(timezone: $unidade->getDateTimeZone());
 
         $data  = [];
         $param = $request->get('ids', '');
@@ -113,18 +113,16 @@ class DefaultController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $envelope = new Envelope();
-
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
 
         $this->checkAtendimento($unidade, $atendimento, $translator);
 
-        $data = $atendimento->jsonSerialize();
-        $envelope->setData($data);
-
-        return $this->json($envelope);
+        return $this->json(new Envelope(
+            timezone: $unidade->getDateTimeZone(),
+            data: $atendimento->jsonSerialize(),
+        ));
     }
 
     /**
@@ -133,17 +131,17 @@ class DefaultController extends AbstractController
     #[Route("/buscar", name: "buscar", methods: ["GET"])]
     public function buscar(Request $request, AtendimentoServiceInterface $atendimentoService): Response
     {
-        $envelope = new Envelope();
-
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
         $numero = $request->get('numero');
 
         $atendimentos = $atendimentoService->buscaAtendimentos($unidade, $numero);
-        $envelope->setData($atendimentos);
 
-        return $this->json($envelope);
+        return $this->json(new Envelope(
+            timezone: $unidade->getDateTimeZone(),
+            data: $atendimentos,
+        ));
     }
 
     /**
@@ -162,11 +160,10 @@ class DefaultController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $envelope = new Envelope();
-
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
+        $envelope = new Envelope(timezone: $unidade->getDateTimeZone());
 
         $this->checkAtendimento($unidade, $atendimento, $translator);
 
@@ -206,10 +203,10 @@ class DefaultController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $envelope = new Envelope();
         /** @var UsuarioInterface */
         $usuario  = $this->getUser();
         $unidade  = $usuario->getLotacao()->getUnidade();
+        $envelope = new Envelope(timezone: $unidade->getDateTimeZone());
         $statuses = [AtendimentoServiceInterface::SENHA_CANCELADA, AtendimentoServiceInterface::NAO_COMPARECEU];
 
         if ($atendimento->getUnidade()->getId() !== $unidade->getId()) {
@@ -251,11 +248,10 @@ class DefaultController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $envelope = new Envelope();
-
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
+        $envelope = new Envelope(timezone: $unidade->getDateTimeZone());
 
         $this->checkAtendimento($unidade, $atendimento, $translator);
         $atendimentoService->cancelar($atendimento, $usuario);
