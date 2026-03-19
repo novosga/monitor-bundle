@@ -360,7 +360,7 @@
         const alertTransferir = "{{ 'alert.transfer.text'|trans }}";
         const dateTimeFormat = "{{ 'MM/DD/YYYY HH:mm:ss'|trans }}";
         
-        App.Clock.init("novosga-clock", {{ milis }});
+        App.Clock.init("novosga-clock", {{ milis }}, "{{ unidade.timezone }}");
     </script>
     <script type="text/javascript" src="{{ asset('bundles/novosgamonitor/js/sweetalert.min.js') }}"></script>
     <script type="text/javascript" src="{{ asset('bundles/novosgamonitor/js/script.js') }}"></script>
