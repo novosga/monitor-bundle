@@ -24,7 +24,7 @@ use Novosga\MonitorBundle\NovosgaMonitorBundle;
 use Novosga\Service\AtendimentoServiceInterface;
 use Novosga\Service\FilaServiceInterface;
 use Novosga\Service\ServicoServiceInterface;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
