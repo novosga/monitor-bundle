@@ -71,7 +71,7 @@ class DefaultController extends AbstractController
         $envelope = new Envelope(timezone: $unidade->getDateTimeZone());
 
         $data  = [];
-        $param = $request->get('ids', '');
+        $param = $request->query->get('ids', '');
         $ids = array_filter(explode(',', $param), fn ($i) => $i > 0);
         $data[] = [
             'fila' => $filaService->getFilaUnidade($unidade),
@@ -134,7 +134,7 @@ class DefaultController extends AbstractController
         /** @var UsuarioInterface */
         $usuario = $this->getUser();
         $unidade = $usuario->getLotacao()->getUnidade();
-        $numero = $request->get('numero');
+        $numero = $request->query->get('numero');
 
         $atendimentos = $atendimentoService->buscaAtendimentos($unidade, $numero);
 
